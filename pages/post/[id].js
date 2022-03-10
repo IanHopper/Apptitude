@@ -1,13 +1,12 @@
-import layoutStyles from "../../styles/Home.module.css"
+
 import Link from "next/link";
 import Meta from "../../components/Meta";
-import { useRouter } from 'next/router'
 
 
 
 const Post = ({post}) => {
   return (
-      <div className={layoutStyles.main}>
+      <div>
         <Meta title={post.title}/>
         <h3>{post.title}</h3>
         <p>{post.body}</p>
