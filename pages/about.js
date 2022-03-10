@@ -1,4 +1,4 @@
-import Layout from "../components/Layout";
+import SWRTest from "../components/SWRTest";
 import Head from "next/head";
 
 const about = () => {
@@ -8,6 +8,7 @@ const about = () => {
         <title>About</title>
       </Head>
       <h1>About</h1>
+      <SWRTest />
     </>
   );
 };
