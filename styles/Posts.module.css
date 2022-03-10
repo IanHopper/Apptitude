@@ -53,3 +53,8 @@
   color: #0070f3;
   text-decoration: none;
 }
+
+.date p {
+  color: steelblue;
+  font-size: x-small;
+}
