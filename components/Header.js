@@ -4,7 +4,7 @@ const Header = () => {
   return (
     <div>
       <h1 className={headerStyles.title}>
-        Appostalic <span>News</span>
+        <span>App</span>ostolic
       </h1>
       <p className={headerStyles.description}>My app development saga</p>
     </div>

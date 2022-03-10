@@ -11,7 +11,7 @@ const Meta = ({title}) => {
 }
 
 Meta.defaultProps = {
-  title: "Appostalic",
+  title: "Appostolic",
 }
 
 export default Meta

@@ -1,4 +1,3 @@
-import SWRTest from "../components/SWRTest";
 import Head from "next/head";
 
 const about = () => {
@@ -8,7 +7,10 @@ const about = () => {
         <title>About</title>
       </Head>
       <h1>About</h1>
-      <SWRTest />
+      <p>
+        This is app is to test a connection between a Django REST API hosted on
+        heroku with a Next.js app hosted on Vercel.
+      </p>
     </>
   );
 };

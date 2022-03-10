@@ -6,7 +6,7 @@ const PostList = ({posts}) => {
   return (
     <div className={postsStyles.grid}>
       {posts.map((post) => (<PostItem post={post} key={post.id}>
-      </PostItem>))}
+      </PostItem>)).reverse()}
     </div>
   )
 }
