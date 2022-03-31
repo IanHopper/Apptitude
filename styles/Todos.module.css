@@ -1,0 +1,135 @@
+
+.grid {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  max-width: 800px;
+  width: 625px;
+  max-width: 100%;
+  left: 180px;
+  margin-bottom: 35px;
+  padding-bottom: 35px;
+}
+
+@media (max-width: 600px) {
+  .grid {
+    width: 100%;
+    flex-direction: column;
+  }
+}
+
+.card {
+  /* display: inline-block; */
+  display: flex;
+  margin: 0.2rem;
+  padding: 0.7rem;
+  text-align: left;
+  color: inherit;
+  text-decoration: none;
+  border: 1px solid #eaeaea;
+  border-radius: 10px;
+  transition: color 0.15s ease, border-color 0.15s ease;
+  width: 80%;
+  display: grid;
+  grid-template-columns: 30px;
+  grid-template-areas:
+    /* 'taskname taskname taskname taskname taskname taskname taskname'
+    'description description description description description description cost'
+    'date date date date date date duration'
+    ; */
+    'taskname taskname taskname taskname taskname taskname date'
+    'description description description description description . cost'
+    'description description description description description . duration'
+    'description description description description description . .'
+    'description description description description description . .'
+    ;
+}
+
+.card:hover,
+.card:focus,
+.card:active {
+  color: #0070f3;
+  border-color: #0070f3;
+  cursor: pointer;
+}
+
+.card h3 {
+  
+}
+
+.card p {
+  display: inline-block;
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+.card .taskname {
+  grid-area: taskname;
+  font-weight: bold;
+  margin: 0 0 0.3rem 0;
+}
+
+.card .taskname .project {
+  color: lightslategray;
+  font-weight: normal;
+  font-size: 0.9rem;
+  text-align: right;
+  padding: 0 5px;
+  transform: translateY(-10%);
+}
+
+.card .description {
+  grid-area: description;
+  margin: 0 0 0.5rem 0;
+  font-size: 0.9rem;
+  color: grey;
+}
+
+.card .date {
+  color: lightslategray;
+  font-size: 0.8rem;
+  grid-area: date;
+  text-align: right;
+  margin: 0.2rem 0.2rem 0 0;
+}
+
+.card .duration {
+  color: lightslategray;
+  grid-area: duration;
+  text-align: right;
+  font-size: 0.8rem;
+}
+
+.card .duration span {
+  font-size: 0.8rem;
+}
+
+.card .cost {
+  grid-area: cost;
+  font-size: 0.8rem;
+  text-align: right;
+  align-self: end;
+  justify-content: flex-end;
+  color: var(--money-color);
+  font-weight: bold;
+  padding: 0 3px;
+  color: rgb(101, 194, 101);
+  margin: 0 0 0.5rem 0;
+}
+
+.vital {
+  color: red !important;
+}
+
+.important {
+  color: orange;
+}
+
+.urgent {
+  color: rgb(41, 154, 247);
+}
+
+.trivial p {
+  color: pink;
+}

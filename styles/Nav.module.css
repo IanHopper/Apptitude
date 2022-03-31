@@ -18,3 +18,11 @@
 .nav ul li a {
   margin: 5px 15px;
 }
+
+.nav h1:hover {
+  cursor: pointer;
+}
+
+.nav .brand {
+  color: #0070f3;
+}

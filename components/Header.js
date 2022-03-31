@@ -6,7 +6,7 @@ const Header = () => {
       <h1 className={headerStyles.title}>
         <span>App</span>ostolic
       </h1>
-      <p className={headerStyles.description}>My app development saga</p>
+      <p className={headerStyles.description}>Integrating Next.js with a Django REST API</p>
     </div>
   );
 };
