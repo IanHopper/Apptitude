@@ -10,11 +10,27 @@
   display: block;
 }
 
+.formWarning {
+  font-size: 0.8rem;
+  opacity: 50%;
+  color: grey;
+  line-height: 0.8rem;
+}
+
 .formControl input {
-  /* width: 100%; */
-  width: 800px;
+  width: 100%;
+  width: 450px;
   height: 40px;
-  margin: 5px;
+  margin: 5px 0 0 0;
+  padding: 3px 7px;
+  font-size: 17px;
+}
+
+.formControl select {
+  width: 100%;
+  width: 450px;
+  height: 40px;
+  margin: 5px 0 0 0;
   padding: 3px 7px;
   font-size: 17px;
 }
@@ -26,7 +42,7 @@
   color: #fff;
   border: none;
   padding: 10px 20px;
-  margin: 5px;
+  /* margin: 5px; */
   border-radius: 5px;
   cursor: pointer;
   text-decoration: none;

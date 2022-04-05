@@ -6,6 +6,7 @@
   display: flex;
   align-items: center;
   justify-content: flex-start;
+  width: 100%;
 }
 
 .nav ul {
@@ -24,5 +25,19 @@
 }
 
 .nav .brand {
+  color: #0070f3;
+}
+
+.left {
+
+  float: left;
+}
+
+.right {
+
+  float: right;
+}
+
+.currentpage {
   color: #0070f3;
 }
