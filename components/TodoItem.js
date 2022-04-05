@@ -7,6 +7,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 const TodoItem = ({ todo }) => {
   const [editTodo, setEditTodo] = useState(false);
 
+  let today = new Date().toISOString().slice(0,10)
+  console.log(today)
+
   const toggleEdit = (e) => {
     setEditTodo(!editTodo);
   };
@@ -31,7 +34,7 @@ const TodoItem = ({ todo }) => {
   };
 
   return (
-    <div onClick={(e) => toggleEdit()} className={todosStyles.card}>
+    <div onClick={(e) => toggleEdit()} className={`${todosStyles.card} ${todosStyles.todo}`}>
       <div className={todosStyles.taskname}>
         <p className={priorityList[priority]}>{task_name}</p>
         {project != null ? (
@@ -56,8 +59,7 @@ const TodoItem = ({ todo }) => {
             <FontAwesomeIcon icon={faCalendarAlt} />
           </span>
           &nbsp;
-          {new Date(todo.due_date).toString().slice(4, 10)},{" "}
-          {new Date(todo.due_date).toString().slice(11, 15)}
+          {today === new Date(todo.due_date).toISOString().slice(0, 10) ? 'Today': new Date(todo.due_date).toISOString().slice(0, 10) }
         </p>
       ) : (
         <p className={todosStyles.date}>

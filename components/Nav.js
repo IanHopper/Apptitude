@@ -2,6 +2,8 @@ import Link from "next/link";
 import navStyles from "../styles/Nav.module.css";
 import { useAppContext } from "../context/state";
 import { useRouter } from "next/router";
+import Search from "./Search";
+import NewTaskButton from "./NewTaskButton";
 
 const Nav = () => {
   const context = useAppContext();
@@ -19,16 +21,17 @@ const Nav = () => {
             </h1>
           </Link>
         </li>
-        <li>
-          <Link href="/about">About</Link>
-        </li>
       </ul>
-
       <ul>
         {auth.isAuthenticated ? (
-          <li>
-            <Link href="/logout">{`Logout (${auth.user})`}</Link>
-          </li>
+          <>
+            <li>
+              <Link href="/profile">{`Profile (${auth.user})`}</Link>
+            </li>
+            <li>
+              <Link href="/logout">{`Logout`}</Link>
+            </li>
+          </>
         ) : (
           <>
             <li>
@@ -36,6 +39,9 @@ const Nav = () => {
             </li>
             <li>
               <Link href="/register">Register</Link>
+            </li>
+            <li style={{ fontWeight: "bold", fontSize: "1.2rem" }}>
+              <Link href="/about">?</Link>
             </li>
           </>
         )}

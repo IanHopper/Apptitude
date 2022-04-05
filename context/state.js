@@ -26,6 +26,7 @@ import {
   DISPLAY_FAILED_LOGIN_MODAL,
   MULTI_SELECT,
   HANDLE_TODO_RESET,
+  SET_FOCUS,
 } from "./types";
 
 const AppContext = createContext();
@@ -57,6 +58,7 @@ export function AppWrapper({ children }) {
     todo: {
       project: null,
     }, // selected todo
+    focus: "All Projects",
     multiSelection: [], // multiple selections for group editing
     projects: [], // array derived from projects in objects in todos
     history: [], // deleted todos that can be recreated
@@ -173,6 +175,15 @@ export function AppWrapper({ children }) {
     });
   };
 
+  const setFocus = (e) => {
+    const focus = e.target.id
+    console.log(focus)
+    dispatch({
+      type: SET_FOCUS,
+      payload: focus,
+    });
+  };
+
   // NOT IMPLEMENTED; STATE CHANGE FORCES REFRESH
   const updateTodos = async (data) => {
     console.log('updateTodos')
@@ -259,6 +270,7 @@ export function AppWrapper({ children }) {
         failedLoginModal: state.failedLoginModal,
         projects: state.projects,
         defaultTodo: state.defaultTodo,
+        focus: state.focus,
         handleSearchInput,
         createTodo,
         cancelTodo,
@@ -266,6 +278,7 @@ export function AppWrapper({ children }) {
         handleInputChange,
         displayTodoForm,
         updateTodos,
+        setFocus,
         login,
         logout,
       }}

@@ -20,6 +20,7 @@ export default function Home() {
   const { data: fetchedTodos, error: todosError } = useSWR([todosUrl, token], fetcher);
   if (todosError) <p>Loading failed...</p>;
   if (!fetchedTodos) <h1>Loading...</h1>;
+  console.log(fetchedTodos)
   const projectUrl = "http://127.0.0.1:8000/api/projects/";
   // Fetch projects
   const { data: projects, error: projectError } = useSWR([projectUrl, token], fetcher);

@@ -22,6 +22,7 @@ import {
   DISPLAY_FAILED_LOGIN_MODAL,
   MULTI_SELECT,
   HANDLE_TODO_RESET,
+  SET_FOCUS
 } from "./types";
 
 export default function reducers(state, action) {
@@ -30,6 +31,11 @@ export default function reducers(state, action) {
       return {
         ...state,
         todos: action.payload
+      };
+    case SET_FOCUS:
+      return {
+        ...state,
+        focus: action.payload
       };
     case HANDLE_FILTER:
       return {
