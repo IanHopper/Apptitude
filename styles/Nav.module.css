@@ -1,6 +1,5 @@
 .nav {
   height: 50px;
-  padding: 10px;
   background: #000;
   color: #fff;
   display: flex;
@@ -10,10 +9,8 @@
 
 .nav ul {
   display: flex;
-  /* justify-content: center; */
   align-items: center;
   list-style: none;
-  margin: 0px 50px;
 }
 
 .nav ul li a {

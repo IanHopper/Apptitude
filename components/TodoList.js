@@ -11,23 +11,24 @@ const TodoList = ({ todos, projects }) => {
 
   let today = new Date().toISOString().slice(0, 10);
   console.log(today);
+  if (todos && todos.length > 0) {
+    if (search) {
+      todos = todos.filter((todo) =>
+        todo.task_name.toUpperCase().includes(search.toUpperCase())
+      );
+    }
 
-  if (search) {
-    todos = todos.filter((todo) =>
-      todo.task_name.toUpperCase().includes(search.toUpperCase())
-    );
-  }
+    if (focus === "Inbox") {
+      todos = todos.filter((todo) => todo.project === null);
+    }
 
-  if (focus === "Inbox") {
-    todos = todos.filter((todo) => todo.project === null);
-  }
+    if (focus === "Today") {
+      todos = todos.filter((todo) => todo.due_date === today);
+    }
 
-  if (focus === "Today") {
-    todos = todos.filter((todo) => todo.due_date === today);
-  }
-
-  if (focus !== "Inbox" && focus !== "Today" && focus !== "All Projects") {
-    todos = todos.filter((todo) => todo.project === focus);
+    if (focus !== "Inbox" && focus !== "Today" && focus !== "All Projects") {
+      todos = todos.filter((todo) => todo.project === focus);
+    }
   }
 
   return (
@@ -76,20 +77,20 @@ const TodoList = ({ todos, projects }) => {
             </div>
           ))}
       </div>
-      
+
       {todoForm ? (
         <div>
-           <div className={todosStyles.tasksHeader}>
-              <div className={`${todosStyles.projectFocus}`}>{focus}</div>
-              <NewTaskButton />
-              <Search />
-            </div>
+          <div className={todosStyles.tasksHeader}>
+            <div className={`${todosStyles.projectFocus}`}>{focus}</div>
+            <NewTaskButton />
+            <Search />
+          </div>
           <NewTodo projects={projects} />
         </div>
       ) : (
         <>
           <div>
-          <div className={todosStyles.tasksHeader}>
+            <div className={todosStyles.tasksHeader}>
               <div className={`${todosStyles.projectFocus}`}>{focus}</div>
               <NewTaskButton />
               <Search />
