@@ -1,21 +1,18 @@
 import todosStyles from "../styles/Todos.module.css";
-import Token from "./Token";
+import { faClock, faCalendarAlt } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useAppContext } from "../context/state";
 
-const NewTodo = ({ projects }) => {
-  const context = useAppContext();
-  const { todo, createTodo, handleInputChange, cancelTodo } = context;
-  let token = Token();
 
+const NewTodo = ({  }) => {
+  const context = useAppContext();
+  const { todo, createTodo, handleInputChange, projects, deleteTodo} = context;
+  
   const handleTodoSubmit = (e) => {
     e.preventDefault();
-    createTodo(todo, token);
+    createTodo();
   };
-  const handleCancelTodo = (e) => {
-    e.preventDefault();
-    cancelTodo();
-  };
-
+  
   const priorityList = {
     1: todosStyles.vital,
     2: todosStyles.important,
@@ -23,28 +20,31 @@ const NewTodo = ({ projects }) => {
     4: todosStyles.trivial,
   };
 
+
+
   return (
     <div>
-      <form onSubmit={handleTodoSubmit} className={todosStyles.formcard}>
+      <form onSubmit={handleTodoSubmit} className={todosStyles.formcard} noValidate>
         <div className={`${todosStyles.formControl}`}>
           <input
             id="task_name"
             className={`${todosStyles.taskName} ${priorityList[todo.priority]}`}
             type="text"
             value={todo.task_name ? todo.task_name : ""}
-            placeholder="New Task"
+            placeholder="Task Name"
             onChange={handleInputChange}
             required
+            autoFocus
           />
         </div>
         <div className={todosStyles.formControl}>
           <select
-            value={todo.project ? todo.project : ""}
+            value={todo.project}
             onChange={handleInputChange}
             id="project"
           >
             <option key={""} value={false}>
-              No Project
+              Inbox
             </option>
             {projects && projects.length > 0
               ? projects.map((project) => (
@@ -62,26 +62,6 @@ const NewTodo = ({ projects }) => {
             value={todo.description ? todo.description : ""}
             onChange={handleInputChange}
             placeholder="Description"
-          />
-        </div>
-        <div className={todosStyles.formControl}>
-          <input
-            id="cost"
-            type="number"
-            min="1"
-            value={todo.cost ? todo.cost : ""}
-            onChange={handleInputChange}
-            step="any"
-            placeholder="$"
-          />
-        </div>
-        <div className={todosStyles.formControl}>
-          <input
-            id="duration"
-            type="number"
-            value={todo.duration ? todo.duration : ""}
-            onChange={handleInputChange}
-            placeholder="Duration"
           />
         </div>
         <div className={todosStyles.formControl}>
@@ -108,10 +88,39 @@ const NewTodo = ({ projects }) => {
         </div>
         <div className={todosStyles.formControl}>
           <input
+            id="cost"
+            type="number"
+            min="1"
+            value={todo.cost ? todo.cost : ""}
+            onChange={handleInputChange}
+            step="any"
+            placeholder="$"
+            
+          />
+        </div>
+        <div className={todosStyles.formControl}>
+          <input
+            id="duration"
+            type="number"
+            value={todo.duration ? todo.duration : ""}
+            onChange={handleInputChange}
+            placeholder="Duration"
+          />
+        </div>
+        <div className={todosStyles.formControl}>
+          <input
             className={todosStyles.saveTodo}
             type="submit"
             value="Save Task"
           />
+          {todo.id !== undefined && <button
+            className={todosStyles.saveTodo}
+            style={{background: 'red'}}
+            onClick={deleteTodo}
+          >Delete Task</button>}
+          
+     
+          
         </div>
       </form>
     </div>

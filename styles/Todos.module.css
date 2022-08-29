@@ -29,6 +29,18 @@
   transition: color 0.15s ease, border-color 0.15s ease;
 }
 
+.title {
+  /* margin: 0.2rem; */
+  padding: 0 0 0 0.7rem;
+  text-align: left;
+  color:inherit;
+}
+
+.checkbox {
+  margin-right: 0.5rem;
+  /* opacity: 0; */
+}
+
 .tasksHeader {
   display: grid;
   grid-template-columns: 50% 10% 70%;
@@ -41,6 +53,7 @@
   font-weight: bold;
   text-align: left;
   border: none;
+  color:#0070f3;
 }
 
 
@@ -194,11 +207,26 @@
   font-size: 17px;
 }
 
+.formControl .projectInput {
+  width: 100%;
+  border: 1px solid #eaeaea;
+  border-radius: 10px;
+}
+
+.formControl .projectInput::placeholder {
+  opacity: 50%;
+}
+
 .formControl .taskName {
   border-top: none;
   border-right: none;
+  border-left: none;
   font-weight: bold;
   font-size: 1.5rem;
+}
+
+.formControl .taskName::placeholder {
+  opacity: 50%;
 }
 
 .vital::placeholder {
@@ -276,7 +304,7 @@
 
 
 .new {
-  background: green;
+  background: #0070f3;
 }
 
 .search {
@@ -302,3 +330,4 @@
 .btn:active {
   transform: scale(0.98);
 }
+

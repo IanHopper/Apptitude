@@ -2,14 +2,30 @@ import Link from "next/link";
 import navStyles from "../styles/Nav.module.css";
 import { useAppContext } from "../context/state";
 import { useRouter } from "next/router";
-import Search from "./Search";
-import NewTaskButton from "./NewTaskButton";
+import { useEffect, useState } from "react";
 
 const Nav = () => {
   const context = useAppContext();
-  const { auth } = context;
+  const { auth, logout, loadUser, refreshJWT } = context;
   const router = useRouter();
+  // Consider highlighting active page in navbar
   const pathname = router.pathname;
+
+  const [currentUser, setCurrentUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let user = localStorage.getItem("user");
+    let token = localStorage.getItem("token");
+    let refresh = localStorage.getItem("refresh");
+    loadUser(user);
+    let interval = setInterval(() => {
+      if (token && refresh) {
+        refreshJWT(refresh);
+      }
+    }, 240000);
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <nav className={navStyles.nav}>
@@ -23,12 +39,13 @@ const Nav = () => {
         </li>
       </ul>
       <ul>
-        {auth.isAuthenticated ? (
+        {auth.user !== null ? (
           <>
             <li>
               <Link href="/profile">{`Profile (${auth.user})`}</Link>
+              
             </li>
-            <li>
+            <li onClick={logout}>
               <Link href="/logout">{`Logout`}</Link>
             </li>
           </>

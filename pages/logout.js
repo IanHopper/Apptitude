@@ -1,10 +1,17 @@
-import Logout from "../components/Logout"
+import Logout from "../components/Logout";
+import Head from "next/head";
+import Header from "../components/Header";
 
 const logout = () => {
-  
   return (
-    <Logout/>
-  )
-}
+    <>
+      <Head>
+        <title>Logout</title>
+      </Head>
+      <Header />
+      <Logout />
+    </>
+  );
+};
 
-export default logout
+export default logout;

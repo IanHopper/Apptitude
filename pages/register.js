@@ -1,13 +1,15 @@
 import Head from "next/head";
 import Register from "../components/Register";
+import Header from "../components/Header";
 
 const register = () => {
   return (
     <>
       <Head>
-        <title>New Post</title>
+        <title>Logout</title>
       </Head>
-      <Register/>
+      <Header />
+      <Register />
     </>
   );
 };

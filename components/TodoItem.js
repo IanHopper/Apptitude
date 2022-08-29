@@ -1,18 +1,12 @@
 import todosStyles from "../styles/Todos.module.css";
-import { useState } from "react";
-import { ReactElement } from "react";
 import { faClock, faCalendarAlt } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useAppContext } from "../context/state";
 
 const TodoItem = ({ todo }) => {
-  const [editTodo, setEditTodo] = useState(false);
-
-  let today = new Date().toISOString().slice(0,10)
-  console.log(today)
-
-  const toggleEdit = (e) => {
-    setEditTodo(!editTodo);
-  };
+  const context = useAppContext();
+  const { displayTodoForm, todos, projects, updateTodoCompleted } = context;
+  let today = new Date().toISOString().slice(0, 10);
 
   const {
     id,
@@ -34,11 +28,25 @@ const TodoItem = ({ todo }) => {
   };
 
   return (
-    <div onClick={(e) => toggleEdit()} className={`${todosStyles.card} ${todosStyles.todo}`}>
+    <div
+      onClick={(e) => displayTodoForm(e, todos, (id = todo.id))}
+      className={`${todosStyles.card} ${todosStyles.todo}`}
+    >
       <div className={todosStyles.taskname}>
+        <p className ='item-completed'>
+          {" "}
+          <input
+            name="complete"
+            type="checkbox"
+            id={`checkbox ${id}`}
+            onChange={(e) => updateTodoCompleted(e,todo)}
+            checked={completed}
+            className={todosStyles.checkbox}
+          ></input>
+        </p>
         <p className={priorityList[priority]}>{task_name}</p>
         {project != null ? (
-          <p className={todosStyles.project}>({project})</p>
+          <p className={todosStyles.project}>{todo.project_name}</p>
         ) : null}
       </div>
 
@@ -59,15 +67,16 @@ const TodoItem = ({ todo }) => {
             <FontAwesomeIcon icon={faCalendarAlt} />
           </span>
           &nbsp;
-          {today === new Date(todo.due_date).toISOString().slice(0, 10) ? 'Today': new Date(todo.due_date).toISOString().slice(0, 10) }
+          {today === new Date(todo.due_date).toISOString().slice(0, 10)
+            ? "Today"
+            : new Date(todo.due_date).toISOString().slice(0, 10)}
         </p>
       ) : (
         <p className={todosStyles.date}>
           <span>
             <FontAwesomeIcon icon={faCalendarAlt} />
           </span>
-          &nbsp;
-          No Date
+          &nbsp; No Date
         </p>
       )}
       <div className={todosStyles.cost}>

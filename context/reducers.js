@@ -1,5 +1,5 @@
 import {
-  FETCH_TODOS,
+  TODOS_DATA_UPDATE,
   DISPLAY_TODO_FORM,
   HANDLE_SORT,
   HANDLE_FILTER,
@@ -9,8 +9,6 @@ import {
   DELETE_TODO,
   HANDLE_LOGIN_CHANGE,
   HANDLE_REGISTER_CHANGE,
-  USER_LOADING,
-  USER_LOADED,
   AUTH_ERROR,
   LOGIN_SUCCESS,
   LOGIN_FAIL,
@@ -22,15 +20,19 @@ import {
   DISPLAY_FAILED_LOGIN_MODAL,
   MULTI_SELECT,
   HANDLE_TODO_RESET,
-  SET_FOCUS
+  SET_FOCUS,
+  LOAD_USER,
+  HANDLE_PROJECT_CHANGE,
+  HANDLE_PROJECT_RESET,
 } from "./types";
 
 export default function reducers(state, action) {
   switch (action.type) {
-    case FETCH_TODOS:
+    case TODOS_DATA_UPDATE:
       return {
         ...state,
-        todos: action.payload
+        todos: action.payload.todos,
+        projects: action.payload.projects
       };
     case SET_FOCUS:
       return {
@@ -51,6 +53,7 @@ export default function reducers(state, action) {
       return {
         ...state,
         todoForm: action.payload.todoForm,
+        todo: action.payload.todo
       };
     case DISPLAY_USER_MODAL:
       return {
@@ -64,6 +67,11 @@ export default function reducers(state, action) {
           ...state.todo,
           [action.payload.id]: action.payload.value,
         },
+      };
+    case HANDLE_PROJECT_CHANGE:
+      return {
+        ...state,
+        projectName: action.payload
       };
     case DISPLAY_DELETE_MODAL:
       return {
@@ -110,7 +118,7 @@ export default function reducers(state, action) {
         ...action.payload,
         auth: {
           ...state.auth,
-          isAuthenticated: true,
+     
           isLoading: false,
           user: action.payload.user,
         },
@@ -121,20 +129,11 @@ export default function reducers(state, action) {
           password2: null,
         },
       };
-    case USER_LOADING:
+    case LOAD_USER:
       return {
         ...state,
         auth: {
           ...state.auth,
-          isLoading: true,
-        },
-      };
-    case USER_LOADED:
-      return {
-        ...state,
-        auth: {
-          ...state.auth,
-          isAuthenticated: true,
           isLoading: false,
           user: action.payload,
         },
@@ -143,24 +142,29 @@ export default function reducers(state, action) {
     case LOGOUT_USER:
     case LOGIN_FAIL:
       localStorage.removeItem("token");
+      localStorage.removeItem("refresh")
+      localStorage.removeItem("user")
       return {
         ...state,
         auth: {
           token: null,
           refreshToken: null,
           user: null,
-          isAuthenticated: false,
           isLoading: false,
         },
       };
     case LOGIN_SUCCESS:
       localStorage.setItem("token", action.payload.token);
+      localStorage.setItem("refresh", action.payload.refreshToken)
+      localStorage.setItem("user", action.payload.user)
+      console.log(action.payload)
       return {
         ...state,
         ...action.payload,
         auth: {
           ...state.auth,
-          isAuthenticated: true,
+          token: action.payload.token,
+          refreshToken: action.payload.refreshToken,
           isLoading: false,
           user: action.payload.user,
         },
@@ -190,6 +194,11 @@ export default function reducers(state, action) {
       return {
         ...state,
         todo: {},
+      };
+    case HANDLE_PROJECT_RESET:
+      return {
+        ...state,
+        projectName: '',
       };
   }
 }

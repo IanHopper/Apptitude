@@ -1,4 +1,6 @@
-export const FETCH_TODOS = 'FETCH_TODOS';
+const DEBUG = true
+
+export const TODOS_DATA_UPDATE = 'TODOS_DATA_UPDATE';
 export const DISPLAY_TODO_FORM = 'DISPLAY_TODO_FORM';
 export const HANDLE_SORT = 'HANDLE_SORT';
 export const HANDLE_FILTER = 'HANDLE_FILTER';
@@ -23,3 +25,8 @@ export const DISPLAY_FAILED_LOGIN_MODAL = 'DISPLAY_FAILED_LOGIN_MODAL';
 export const MULTI_SELECT = 'MULTI_SELECT';
 export const HANDLE_TODO_RESET = 'HANDLE_TODO_RESET'
 export const SET_FOCUS = 'SET_FOCUS'
+export const DEV_URL = "http://127.0.0.1:8000/"
+export const PRODUCTION_URL = "https://django-nextjs-apptitude.herokuapp.com/"
+export const URL_ENDPOINT = DEBUG ? DEV_URL : PRODUCTION_URL
+export const LOAD_USER = 'LOAD_USER'
+export const HANDLE_PROJECT_CHANGE = 'HANDLE_PROJECT_CHANGE'

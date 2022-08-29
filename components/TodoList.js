@@ -4,13 +4,14 @@ import { useAppContext } from "../context/state";
 import NewTodo from "./NewTodo";
 import NewTaskButton from "./NewTaskButton";
 import Search from "./Search";
+import ProjectList from "./ProjectList";
 
-const TodoList = ({ todos, projects }) => {
+const TodoList = () => {
   const context = useAppContext();
-  const { todoForm, search, setFocus, focus } = context;
+  const { todoForm, search, focus, projects, todos, todo } = context;
 
   let today = new Date().toISOString().slice(0, 10);
-  console.log(today);
+
   if (todos && todos.length > 0) {
     if (search) {
       todos = todos.filter((todo) =>
@@ -27,61 +28,28 @@ const TodoList = ({ todos, projects }) => {
     }
 
     if (focus !== "Inbox" && focus !== "Today" && focus !== "All Projects") {
-      todos = todos.filter((todo) => todo.project === focus);
+      todos = todos.filter((todo) => todo.project_name === focus);
     }
   }
 
+ let heading = focus
+
+ if (todoForm) {
+  heading = todo.id !== undefined ? `Edit ${todo.task_name}` : "Create a New Task"
+ }
+
+  
+
   return (
     <div className={todosStyles.datacontainer}>
-      <div>
-        <div
-          key={"Inbox"}
-          className={todosStyles.card}
-          onClick={setFocus}
-          style={focus === "Inbox" ? { fontWeight: "bold" } : null}
-          id="Inbox"
-        >
-          Inbox
-        </div>
-        <div
-          key={"Today"}
-          className={todosStyles.card}
-          onClick={setFocus}
-          id={"Today"}
-          style={focus === "Today" ? { fontWeight: "bold" } : null}
-        >
-          Today
-        </div>
-        <div
-          key={"All Projects"}
-          id={"All Projects"}
-          style={focus === "All Projects" ? { fontWeight: "bold" } : null}
-          className={todosStyles.card}
-          onClick={setFocus}
-        >
-          All Projects <span style={{ float: "right" }}>+</span>
-        </div>
-        {projects &&
-          projects.length > 0 &&
-          projects.map((project) => (
-            <div
-              key={project.id}
-              id={project.project_name}
-              style={
-                focus === project.project_name ? { fontWeight: "bold" } : null
-              }
-              className={todosStyles.card}
-              onClick={setFocus}
-            >
-              {project.project_name}
-            </div>
-          ))}
-      </div>
+      <ProjectList projects={projects} />
 
       {todoForm ? (
         <div>
           <div className={todosStyles.tasksHeader}>
-            <div className={`${todosStyles.projectFocus}`}>{focus}</div>
+            <div className={`${todosStyles.projectFocus}`}>
+              {heading}
+            </div>
             <NewTaskButton />
             <Search />
           </div>

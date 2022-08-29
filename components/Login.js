@@ -11,7 +11,7 @@ const Login = () => {
 
   const router = useRouter();
 
-  auth.isAuthenticated ? router.push("/") : null;
+  auth.user ? router.push("/") : null;
 
   return (
     <div>

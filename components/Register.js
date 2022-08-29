@@ -2,6 +2,7 @@ import { useRouter } from "next/router";
 import formStyles from "../styles/Add.module.css";
 import { useState } from "react";
 import Header from "./Header";
+import { URL_ENDPOINT } from "../context/types";
 
 const Register = () => {
   const [unique_username, setUnique_Username] = useState(true);
@@ -14,7 +15,7 @@ const Register = () => {
     const email = e.target.email.value;
 
     const JSONdata = JSON.stringify({ username, password, email });
-    const endpoint = "http://localhost:8000/register/";
+    const endpoint = `${URL_ENDPOINT}register/`;
     const options = {
       method: "POST",
       headers: {
@@ -27,7 +28,7 @@ const Register = () => {
       console.log(res.status);
       res.status == "200" ? router.push("about") : setUnique_Username(false);
       let data = await res.json();
-      console.log(data);
+      router.push("/login");
       return data;
     } catch (error) {
       console.log(error);
@@ -35,12 +36,12 @@ const Register = () => {
 
     // If status 200, go to success page; if error, display error and allow another attempt to register
 
-    // router.push("/");
+    
   };
 
   return (
-    <>
-      <Header />
+    <div>
+      <h2>Register</h2>
       <form className={formStyles.addform} onSubmit={handleSubmit}>
         <div className={formStyles.formControl}>
           <label>
@@ -65,7 +66,7 @@ const Register = () => {
         </div>
         <input className={formStyles.btn} type="submit" value="Register" />
       </form>
-    </>
+    </div>
   );
 };
 

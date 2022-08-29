@@ -2,13 +2,15 @@ import { createContext, useContext } from "react";
 import reducers from "./reducers";
 import { useReducer } from "react";
 import {mutate} from "swr";
+import jwtDecode from "jwt-decode";
+
+
 import {
-  FETCH_TODOS,
+  TODOS_DATA_UPDATE,
   DISPLAY_TODO_FORM,
   HANDLE_SORT,
   HANDLE_FILTER,
   HANDLE_INPUT_CHANGE,
-  DISPLAY_DELETE_MODAL,
   HANDLE_UNDO,
   DELETE_TODO,
   HANDLE_LOGIN_CHANGE,
@@ -21,13 +23,16 @@ import {
   LOGOUT_USER,
   HANDLE_REGISTER_SUCCESS,
   HANDLE_SEARCH_INPUT,
-  DISPLAY_USER_MODAL,
   UPDATE_TASK_DATA,
-  DISPLAY_FAILED_LOGIN_MODAL,
   MULTI_SELECT,
   HANDLE_TODO_RESET,
   SET_FOCUS,
+  URL_ENDPOINT,
+  LOAD_USER,
+  HANDLE_PROJECT_CHANGE,
+  HANDLE_PROJECT_RESET,
 } from "./types";
+import { Router } from "next/router";
 
 const AppContext = createContext();
 
@@ -37,9 +42,9 @@ export function AppWrapper({ children }) {
     auth: {
       token: typeof window !== "undefined" ? localStorage.getItem("token") : "",
       rereshToken: typeof window !== "undefined" ? localStorage.getItem("token") : "",
-      isAuthenticated: false,
-      isLoading: false,
-      user: null,
+      // isLoading: false,
+      // user: null,
+      user: typeof window !== "undefined" ? localStorage.getItem("user") : ""
     },
     // credentials to submit to API for login
     loginCredentials: {
@@ -53,34 +58,31 @@ export function AppWrapper({ children }) {
       password: null,
       password2: null,
     },
-    taskData: {}, // object with total quantity, duration, and cost of displayed tasks
+    tasksData: {}, // object with total quantity, duration, and cost of displayed tasks
     todos: [], // todo array from API
     todo: {
       project: null,
-    }, // selected todo
+    }, // current todo
     focus: "All Projects",
     multiSelection: [], // multiple selections for group editing
     projects: [], // array derived from projects in objects in todos
     history: [], // deleted todos that can be recreated
     search: "", // search input
     todoForm: false, // task create and update form
-    modalNew: true, // boolean for create or update task modal
-    deleteModal: "", // value of todo to be deleted
-    failedLoginModal: "",
-    userModal: false, // boolean to display logout modal
-    sortSelection: "date-ascending",
-    filterSelection: "active",
+    projectName: "",
+    // sortSelection: "date-ascending",
+    // filterSelection: "active",
     // default todo values for creating a new task
-    defaultTodo: {
-      username: null,
-      task_name: "",
-      description: "",
-      due_date: null,
-      priority: 4,
-      project: "",
-      cost: null,
-      duration: null,
-    },
+    // defaultTodo: {
+    //   username: null,
+    //   task_name: "",
+    //   description: "",
+    //   due_date: null,
+    //   priority: 4,
+    //   project: "",
+    //   cost: null,
+    //   duration: null,
+    // },
   };
 
   const [state, dispatch] = useReducer(reducers, initialState);
@@ -96,7 +98,7 @@ export function AppWrapper({ children }) {
     }
 
     const JSONdata = JSON.stringify({ username, password });
-    const endpoint = "http://localhost:8000/login/";
+    const endpoint = `${URL_ENDPOINT}login/`;
     const options = {
       method: "POST",
       headers: {
@@ -107,20 +109,20 @@ export function AppWrapper({ children }) {
     async function getKey() {
       let data = await res.json();
       let token = data.access;
-      let refresh_token = data.refresh;
-      console.log(`token: ${token}`);
-      console.log(`refresh token: ${refresh_token}`);
-      console.log(data);
-      return token;
+      let refreshToken = data.refresh;
+      return { token, refreshToken }
     }
     const res = await fetch(endpoint, options);
     if (res.status === 200) {
-      console.log("200 OK");
-      let token = await getKey();
+      let { token, refreshToken } = await getKey();
+      let decoded_token = jwtDecode(token)
+      // console.log("Decoded Token", decoded_token)
       dispatch({
         type: LOGIN_SUCCESS,
-        payload: { token: token, user: username },
+        payload: { token: token, refreshToken: refreshToken, user: decoded_token.username },
       });
+    } else {
+      alert('Something went wrong')
     }
   };
 
@@ -133,29 +135,55 @@ export function AppWrapper({ children }) {
     });
   };
 
-  // Logout
-  const logout = async () => {
-    let token = localStorage.getItem("token")
-      ? localStorage.getItem("token")
-      : "";
-    // Headers
-    const config = {
+  // Refresh tokens
+  const refreshJWT = async () => {
+    const refresh = localStorage.getItem("refresh")
+    console.log('refresh ran')
+    const JSONdata =  JSON.stringify({'refresh': refresh})
+    const endpoint = `${URL_ENDPOINT}login/refresh/`;
+    const options = {
+      method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
+      body: JSONdata,
     };
-    // If token, add to headers config
-    if (token) {
-      config.headers["Authorization"] = `Token ${token}`;
+    async function getKey() {
+      let data = await res.json();
+      let token = data.access;
+      let refreshToken = data.refresh;
+      return { token, refreshToken }
     }
-    try {
-      await axios.post(`${appUrl}/api/auth/logout`, null, config);
+    const res = await fetch(endpoint, options);
+    if (res.status === 200) {
+      let { token, refreshToken } = await getKey();
+      let decoded_token = jwtDecode(token)
+      // console.log('Refresh 200')
+      // console.log('Token', token)
+      // console.log('Refresh', refreshToken)
       dispatch({
-        type: LOGOUT_USER,
+        type: LOGIN_SUCCESS,
+        payload: { token: token, refreshToken: refreshToken, user: decoded_token.username },
       });
-    } catch (err) {
-      console.log(err.response.data, err.response.status);
+    } else {
+      logout()
     }
+  };
+
+  // When page loads check for user
+  const loadUser = (user) => {
+    dispatch({
+      type: LOAD_USER,
+      payload: user 
+    })
+  }
+
+  // Logout
+  const logout = async () => {
+    // console.log("log out")
+    dispatch ({
+      type: LOGOUT_USER
+    })
   };
 
   // Handle change in form input
@@ -167,32 +195,46 @@ export function AppWrapper({ children }) {
     });
   };
 
-  const displayTodoForm = () => {
+  // Handle change in form input
+  const handleProjectChange = (e) => {
+    const projectName = e.target.value;
+    dispatch({
+      type: HANDLE_PROJECT_CHANGE,
+      payload: projectName,
+    });
+  };
+
+  const displayTodoForm = (e, todos, id) => {
+    id && console.log(id)
+    const todo = id ? todos.filter(todo => {
+      return todo.id === id
+    })[0]: {}
+    console.log(todo)
     let todoForm = !state.todoForm;
     dispatch({
       type: DISPLAY_TODO_FORM,
-      payload: { todoForm },
+      payload: { todoForm, todo },
     });
   };
 
   const setFocus = (e) => {
     const focus = e.target.id
-    console.log(focus)
+    // console.log(focus)
     dispatch({
       type: SET_FOCUS,
       payload: focus,
     });
   };
 
-  // NOT IMPLEMENTED; STATE CHANGE FORCES REFRESH
-  const updateTodos = async (data) => {
-    console.log('updateTodos')
-    console.log(data)
+ 
+  const updateTodos = async (todos, projects) => {
+ 
     dispatch({
-      type: FETCH_TODOS,
-      payload: data
+      type: TODOS_DATA_UPDATE,
+      payload: { todos: todos, projects: projects }
     })
   }
+
   const cancelTodo = async () => {
     let form = await displayTodoForm();
 
@@ -208,42 +250,139 @@ export function AppWrapper({ children }) {
       payload: { value },
     });
   };
+
   
-  const createTodo = async (todo, token) => {
+  
+  const createProject = async (projectName) => {
     const data = {
-      task_name: todo.task_name,
-      description: todo.description,
-      due_date: todo.due_date,
-      priority: todo.priority,
-      project: todo.project,
-      cost: todo.cost,
-      duration: todo.duration,
-    };
-
-    const JSONdata = JSON.stringify(data);
-
-    const endpoint = "http://127.0.0.1:8000/api/todos/";
-
+      project_name: projectName
+    }
+    const JSONdata = JSON.stringify(data)
+    let token = state.auth.token
+    const endpoint = `${URL_ENDPOINT}api/projects/`
     const options = {
       method: "POST",
       headers: {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
+        "Accept": "*/*"
       },
       body: JSONdata,
     };
     const res = await fetch(endpoint, options);
-    const result = await res.json();
-    console.log(result);
+    // Force useSWR to refresh projects from api
+    mutate([`${URL_ENDPOINT}api/projects/`, token])
+    mutate([`${URL_ENDPOINT}api/todos/`, token])
+
+    dispatch({
+      type: HANDLE_PROJECT_RESET,
+    });
+  }
+
+  const createTodo = async () => {
+    const todo = state.todo
+    const data = {
+      task_name: todo.task_name,
+      description: todo.description,
+      due_date: todo.due_date,
+      priority: todo.priority,
+      cost: todo.cost,
+      duration: todo.duration,
+      id: todo.id,
+      project: todo.project
+    };
+
+    todo.project !== null ? data.project = todo.project : null
+    // const id = data.id !== {} ? `${data.id}/` : ''
+    const id = data.id ? `${data.id}/` : ''
+    const method = data.id ? "PUT" : "POST"
+    
+    console.log(id)
+    let token = state.auth.token
+    const JSONdata = JSON.stringify(data);
+
+    const endpoint = `${URL_ENDPOINT}api/todos/${id}`
+    console.log(method)
+    const options = {
+      method: method,
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+        "Accept": "*/*"
+      },
+      body: JSONdata,
+    };
+    const res = await fetch(endpoint, options);
+    console.log(res)
     let form = await displayTodoForm();
     // Force useSWR to refresh todos from api
-    mutate(["http://127.0.0.1:8000/api/todos/", token])
+    mutate([`${URL_ENDPOINT}api/projects/`, token])
+    mutate([`${URL_ENDPOINT}api/todos/`, token])
 
     dispatch({
       type: HANDLE_TODO_RESET,
     });
     
-    
+  };
+
+  const updateTodoCompleted = async (e, todo) => {
+    let token = state.auth.token
+    const data = {
+      task_name: todo.task_name,
+      description: todo.description,
+      due_date: todo.due_date,
+      priority: todo.priority,
+      cost: todo.cost,
+      duration: todo.duration,
+      id: todo.id,
+      project: todo.project,
+      completed: e.target.checked === true
+    }
+    const JSONdata = JSON.stringify(data)
+    const endpoint = `${URL_ENDPOINT}api/todos/${data.id}/`
+    const options = {
+      method: 'PUT',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+        "Accept": "*/*"
+      },
+      body: JSONdata,
+    };
+    const res = await fetch(endpoint, options);
+    let form = await displayTodoForm();
+    // Force useSWR to refresh todos from api
+    mutate([`${URL_ENDPOINT}api/projects/`, token])
+    mutate([`${URL_ENDPOINT}api/todos/`, token])
+
+    dispatch({
+      type: HANDLE_TODO_RESET,
+    });
+  }
+
+  const deleteTodo = async () => {
+    const id = `${state.todo.id}/`
+    let token = state.auth.token
+
+    const endpoint = `${URL_ENDPOINT}api/todos/${id}`
+    const options = {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+        "Accept": "*/*"
+      }
+    };
+    const res = await fetch(endpoint, options);
+    console.log(res)
+    let form = await displayTodoForm();
+    // Force useSWR to refresh todos from api
+    mutate([`${URL_ENDPOINT}api/projects/`, token])
+    mutate([`${URL_ENDPOINT}api/todos/`, token])
+
+    dispatch({
+      type: HANDLE_TODO_RESET,
+    });
     
   };
 
@@ -258,29 +397,32 @@ export function AppWrapper({ children }) {
         multiSelection: state.multiSelection,
         search: state.search,
         todoForm: state.todoForm,
-        modalNew: state.modalNew,
+        projectName: state.projectName,  
         sortSelection: state.sortSelection,
         filterSelection: state.filterSelection,
-        deleteModal: state.deleteModal,
-        userModal: state.userModal,
         history: state.history,
         loginCredentials: state.loginCredentials,
         registration: state.registration,
-        taskData: state.taskData,
-        failedLoginModal: state.failedLoginModal,
+        tasksData: state.taskData,
         projects: state.projects,
         defaultTodo: state.defaultTodo,
         focus: state.focus,
         handleSearchInput,
+        handleProjectChange,
         createTodo,
+        createProject,
         cancelTodo,
         handleLoginChange,
         handleInputChange,
         displayTodoForm,
+        deleteTodo,
+        refreshJWT,
         updateTodos,
         setFocus,
+        loadUser,
         login,
         logout,
+        updateTodoCompleted,
       }}
     >
       {children}

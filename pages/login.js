@@ -7,7 +7,7 @@ const login = () => {
   return (
     <>
       <Head>
-        <title>New Post</title>
+        <title>Login</title>
       </Head>
       <Header/>
       <Login/>
