@@ -8,11 +8,12 @@ import ProjectList from "./ProjectList";
 
 const TodoList = () => {
   const context = useAppContext();
-  const { todoForm, search, focus, projects, todos, todo } = context;
-
-  let today = new Date().toISOString().slice(0, 10);
+  const { todoForm, search, focus, projects, todos, todo} = context;
 
   if (todos && todos.length > 0) {
+    // Filter out deleted todos
+    todos = todos.filter((todo) => !todo.deleted) 
+    
     if (search) {
       todos = todos.filter((todo) =>
         todo.task_name.toUpperCase().includes(search.toUpperCase())
@@ -24,7 +25,7 @@ const TodoList = () => {
     }
 
     if (focus === "Today") {
-      todos = todos.filter((todo) => todo.due_date === today);
+      todos = todos.filter((todo) => todo.due_date === new Date().toISOString().slice(0, 10));
     }
 
     if (focus !== "Inbox" && focus !== "Today" && focus !== "All Projects") {

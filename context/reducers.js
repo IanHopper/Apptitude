@@ -29,7 +29,7 @@ import {
 export default function reducers(state, action) {
   switch (action.type) {
     case TODOS_DATA_UPDATE:
-      return {
+    return {
         ...state,
         todos: action.payload.todos,
         projects: action.payload.projects
@@ -157,7 +157,7 @@ export default function reducers(state, action) {
       localStorage.setItem("token", action.payload.token);
       localStorage.setItem("refresh", action.payload.refreshToken)
       localStorage.setItem("user", action.payload.user)
-      console.log(action.payload)
+      
       return {
         ...state,
         ...action.payload,

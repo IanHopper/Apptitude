@@ -21,7 +21,7 @@ export default function Home() {
   const { data: fetchedTodos, error: todosError } = useSWR([todosUrl, token], fetcher);
   if (todosError) <p>Loading failed...</p>;
   if (!fetchedTodos) <h1>Loading...</h1>;
-
+  console.log(fetchedTodos)
   
   
   const projectUrl = `${URL_ENDPOINT}api/projects/`;
@@ -32,7 +32,8 @@ export default function Home() {
 
   useEffect(() => {
     updateTodos(fetchedTodos, fetchedProjects)
-    console.log(fetchedTodos, fetchedProjects)
+    
+    
   }, [fetchedTodos, fetchedProjects])
 
  

@@ -6,7 +6,7 @@ import { useAppContext } from "../context/state";
 
 const NewTodo = ({  }) => {
   const context = useAppContext();
-  const { todo, createTodo, handleInputChange, projects, deleteTodo} = context;
+  const { todo, createTodo, handleInputChange, projects, handleTodoClickChange, project} = context;
   
   const handleTodoSubmit = (e) => {
     e.preventDefault();
@@ -52,7 +52,7 @@ const NewTodo = ({  }) => {
                     {project.project_name}
                   </option>
                 ))
-              : null}
+              : ''}
           </select>
         </div>
         <div className={todosStyles.formControl}>
@@ -115,8 +115,9 @@ const NewTodo = ({  }) => {
           />
           {todo.id !== undefined && <button
             className={todosStyles.saveTodo}
+            name = "delete-button"
             style={{background: 'red'}}
-            onClick={deleteTodo}
+            onClick={(e) => handleTodoClickChange(e,todo)}
           >Delete Task</button>}
           
      

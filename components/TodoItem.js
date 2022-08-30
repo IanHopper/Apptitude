@@ -2,11 +2,11 @@ import todosStyles from "../styles/Todos.module.css";
 import { faClock, faCalendarAlt } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useAppContext } from "../context/state";
+import e from "cors";
 
 const TodoItem = ({ todo }) => {
   const context = useAppContext();
-  const { displayTodoForm, todos, projects, updateTodoCompleted } = context;
-  let today = new Date().toISOString().slice(0, 10);
+  const { displayTodoForm, todos, projects, handleTodoClickChange } = context;
 
   const {
     id,
@@ -17,7 +17,7 @@ const TodoItem = ({ todo }) => {
     duration,
     cost,
     completed,
-    project,
+    project
   } = todo;
 
   const priorityList = {
@@ -27,19 +27,27 @@ const TodoItem = ({ todo }) => {
     4: todosStyles.trivial,
   };
 
+  const checkOrEdit = (e) => {
+    e.target.type === 'checkbox'? console.log('checkbox'): displayTodoForm(e, todos, (id=todo.id))
+  }
+
+  // 
+
   return (
-    <div
-      onClick={(e) => displayTodoForm(e, todos, (id = todo.id))}
+    <div id={id}
+    
+    onClick={(e) => checkOrEdit(e)}
+    
       className={`${todosStyles.card} ${todosStyles.todo}`}
     >
       <div className={todosStyles.taskname}>
         <p className ='item-completed'>
           {" "}
           <input
-            name="complete"
+            name="complete-checkbox"
             type="checkbox"
             id={`checkbox ${id}`}
-            onChange={(e) => updateTodoCompleted(e,todo)}
+            onChange={(e) => handleTodoClickChange(e,todo)}
             checked={completed}
             className={todosStyles.checkbox}
           ></input>
@@ -67,9 +75,7 @@ const TodoItem = ({ todo }) => {
             <FontAwesomeIcon icon={faCalendarAlt} />
           </span>
           &nbsp;
-          {today === new Date(todo.due_date).toISOString().slice(0, 10)
-            ? "Today"
-            : new Date(todo.due_date).toISOString().slice(0, 10)}
+          {due_date}
         </p>
       ) : (
         <p className={todosStyles.date}>

@@ -1,9 +1,8 @@
 import { createContext, useContext } from "react";
 import reducers from "./reducers";
 import { useReducer } from "react";
-import {mutate} from "swr";
+import { mutate } from "swr";
 import jwtDecode from "jwt-decode";
-
 
 import {
   TODOS_DATA_UPDATE,
@@ -41,10 +40,11 @@ export function AppWrapper({ children }) {
     // authentication credentials
     auth: {
       token: typeof window !== "undefined" ? localStorage.getItem("token") : "",
-      rereshToken: typeof window !== "undefined" ? localStorage.getItem("token") : "",
+      rereshToken:
+        typeof window !== "undefined" ? localStorage.getItem("token") : "",
       // isLoading: false,
       // user: null,
-      user: typeof window !== "undefined" ? localStorage.getItem("user") : ""
+      user: typeof window !== "undefined" ? localStorage.getItem("user") : "",
     },
     // credentials to submit to API for login
     loginCredentials: {
@@ -69,20 +69,7 @@ export function AppWrapper({ children }) {
     history: [], // deleted todos that can be recreated
     search: "", // search input
     todoForm: false, // task create and update form
-    projectName: "",
-    // sortSelection: "date-ascending",
-    // filterSelection: "active",
-    // default todo values for creating a new task
-    // defaultTodo: {
-    //   username: null,
-    //   task_name: "",
-    //   description: "",
-    //   due_date: null,
-    //   priority: 4,
-    //   project: "",
-    //   cost: null,
-    //   duration: null,
-    // },
+    projectName: ""
   };
 
   const [state, dispatch] = useReducer(reducers, initialState);
@@ -110,19 +97,22 @@ export function AppWrapper({ children }) {
       let data = await res.json();
       let token = data.access;
       let refreshToken = data.refresh;
-      return { token, refreshToken }
+      return { token, refreshToken };
     }
     const res = await fetch(endpoint, options);
     if (res.status === 200) {
       let { token, refreshToken } = await getKey();
-      let decoded_token = jwtDecode(token)
-      // console.log("Decoded Token", decoded_token)
+      let decoded_token = jwtDecode(token);
       dispatch({
         type: LOGIN_SUCCESS,
-        payload: { token: token, refreshToken: refreshToken, user: decoded_token.username },
+        payload: {
+          token: token,
+          refreshToken: refreshToken,
+          user: decoded_token.username,
+        },
       });
     } else {
-      alert('Something went wrong')
+      alert("Something went wrong");
     }
   };
 
@@ -137,9 +127,9 @@ export function AppWrapper({ children }) {
 
   // Refresh tokens
   const refreshJWT = async () => {
-    const refresh = localStorage.getItem("refresh")
-    console.log('refresh ran')
-    const JSONdata =  JSON.stringify({'refresh': refresh})
+    const refresh = localStorage.getItem("refresh");
+    console.log("refresh ran");
+    const JSONdata = JSON.stringify({ refresh: refresh });
     const endpoint = `${URL_ENDPOINT}login/refresh/`;
     const options = {
       method: "POST",
@@ -152,21 +142,25 @@ export function AppWrapper({ children }) {
       let data = await res.json();
       let token = data.access;
       let refreshToken = data.refresh;
-      return { token, refreshToken }
+      return { token, refreshToken };
     }
     const res = await fetch(endpoint, options);
     if (res.status === 200) {
       let { token, refreshToken } = await getKey();
-      let decoded_token = jwtDecode(token)
+      let decoded_token = jwtDecode(token);
       // console.log('Refresh 200')
       // console.log('Token', token)
       // console.log('Refresh', refreshToken)
       dispatch({
         type: LOGIN_SUCCESS,
-        payload: { token: token, refreshToken: refreshToken, user: decoded_token.username },
+        payload: {
+          token: token,
+          refreshToken: refreshToken,
+          user: decoded_token.username,
+        },
       });
     } else {
-      logout()
+      logout();
     }
   };
 
@@ -174,16 +168,16 @@ export function AppWrapper({ children }) {
   const loadUser = (user) => {
     dispatch({
       type: LOAD_USER,
-      payload: user 
-    })
-  }
+      payload: user,
+    });
+  };
 
   // Logout
   const logout = async () => {
     // console.log("log out")
-    dispatch ({
-      type: LOGOUT_USER
-    })
+    dispatch({
+      type: LOGOUT_USER,
+    });
   };
 
   // Handle change in form input
@@ -205,11 +199,13 @@ export function AppWrapper({ children }) {
   };
 
   const displayTodoForm = (e, todos, id) => {
-    id && console.log(id)
-    const todo = id ? todos.filter(todo => {
-      return todo.id === id
-    })[0]: {}
-    console.log(todo)
+    id && console.log(id);
+    const todo = id
+      ? todos.filter((todo) => {
+          return todo.id === id;
+        })[0]
+      : {};
+
     let todoForm = !state.todoForm;
     dispatch({
       type: DISPLAY_TODO_FORM,
@@ -218,32 +214,30 @@ export function AppWrapper({ children }) {
   };
 
   const setFocus = (e) => {
-    const focus = e.target.id
-    // console.log(focus)
+    const focus = e.target.id;
+
     dispatch({
       type: SET_FOCUS,
       payload: focus,
     });
   };
 
- 
   const updateTodos = async (todos, projects) => {
- 
     dispatch({
       type: TODOS_DATA_UPDATE,
-      payload: { todos: todos, projects: projects }
-    })
-  }
+      payload: { todos: todos, projects: projects },
+    });
+  };
 
   const cancelTodo = async () => {
     let form = await displayTodoForm();
 
-  dispatch({
-    type: HANDLE_TODO_RESET,
-  })
-  }
-   // Handle search input
-   const handleSearchInput = (e) => {
+    dispatch({
+      type: HANDLE_TODO_RESET,
+    });
+  };
+  // Handle search input
+  const handleSearchInput = (e) => {
     const { value } = e.target;
     dispatch({
       type: HANDLE_SEARCH_INPUT,
@@ -251,82 +245,34 @@ export function AppWrapper({ children }) {
     });
   };
 
-  
-  
   const createProject = async (projectName) => {
     const data = {
-      project_name: projectName
-    }
-    const JSONdata = JSON.stringify(data)
-    let token = state.auth.token
-    const endpoint = `${URL_ENDPOINT}api/projects/`
+      project_name: projectName,
+    };
+    const JSONdata = JSON.stringify(data);
+    let token = state.auth.token;
+    const endpoint = `${URL_ENDPOINT}api/projects/`;
     const options = {
       method: "POST",
       headers: {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
-        "Accept": "*/*"
+        Accept: "*/*",
       },
       body: JSONdata,
     };
     const res = await fetch(endpoint, options);
     // Force useSWR to refresh projects from api
-    mutate([`${URL_ENDPOINT}api/projects/`, token])
-    mutate([`${URL_ENDPOINT}api/todos/`, token])
+    mutate([`${URL_ENDPOINT}api/projects/`, token]);
+    mutate([`${URL_ENDPOINT}api/todos/`, token]);
 
     dispatch({
       type: HANDLE_PROJECT_RESET,
     });
-  }
-
-  const createTodo = async () => {
-    const todo = state.todo
-    const data = {
-      task_name: todo.task_name,
-      description: todo.description,
-      due_date: todo.due_date,
-      priority: todo.priority,
-      cost: todo.cost,
-      duration: todo.duration,
-      id: todo.id,
-      project: todo.project
-    };
-
-    todo.project !== null ? data.project = todo.project : null
-    // const id = data.id !== {} ? `${data.id}/` : ''
-    const id = data.id ? `${data.id}/` : ''
-    const method = data.id ? "PUT" : "POST"
-    
-    console.log(id)
-    let token = state.auth.token
-    const JSONdata = JSON.stringify(data);
-
-    const endpoint = `${URL_ENDPOINT}api/todos/${id}`
-    console.log(method)
-    const options = {
-      method: method,
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-        "Accept": "*/*"
-      },
-      body: JSONdata,
-    };
-    const res = await fetch(endpoint, options);
-    console.log(res)
-    let form = await displayTodoForm();
-    // Force useSWR to refresh todos from api
-    mutate([`${URL_ENDPOINT}api/projects/`, token])
-    mutate([`${URL_ENDPOINT}api/todos/`, token])
-
-    dispatch({
-      type: HANDLE_TODO_RESET,
-    });
-    
   };
 
-  const updateTodoCompleted = async (e, todo) => {
-    let token = state.auth.token
+  const createTodo = async () => {
+    const todo = state.todo;
     const data = {
       task_name: todo.task_name,
       description: todo.description,
@@ -336,56 +282,103 @@ export function AppWrapper({ children }) {
       duration: todo.duration,
       id: todo.id,
       project: todo.project,
-      completed: e.target.checked === true
-    }
-    const JSONdata = JSON.stringify(data)
-    const endpoint = `${URL_ENDPOINT}api/todos/${data.id}/`
+    };
+
+    todo.project !== null ? (data.project = todo.project) : null;
+    // const id = data.id !== {} ? `${data.id}/` : ''
+    const id = data.id ? `${data.id}/` : "";
+    const method = data.id ? "PUT" : "POST";
+
+    let token = state.auth.token;
+    const JSONdata = JSON.stringify(data);
+
+    const endpoint = `${URL_ENDPOINT}api/todos/${id}`;
+
     const options = {
-      method: 'PUT',
+      method: method,
       headers: {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
-        "Accept": "*/*"
+        Accept: "*/*",
       },
       body: JSONdata,
     };
     const res = await fetch(endpoint, options);
+
     let form = await displayTodoForm();
     // Force useSWR to refresh todos from api
-    mutate([`${URL_ENDPOINT}api/projects/`, token])
-    mutate([`${URL_ENDPOINT}api/todos/`, token])
+    mutate([`${URL_ENDPOINT}api/projects/`, token]);
+    mutate([`${URL_ENDPOINT}api/todos/`, token]);
 
     dispatch({
       type: HANDLE_TODO_RESET,
     });
-  }
+  };
+
+  const handleTodoClickChange = async (e, todo) => {
+    
+    let token = state.auth.token;
+    const data = {
+      task_name: todo.task_name,
+      description: todo.description,
+      due_date: todo.due_date,
+      priority: todo.priority,
+      cost: todo.cost,
+      duration: todo.duration,
+      id: todo.id,
+      project: todo.project,
+      completed:
+        e.target.type === 'checkbox'
+          ? e.target.checked === true
+          : todo.completed,
+      deleted: e.target.name === "delete-button" ? true : todo.deleted,
+    };
+    const JSONdata = JSON.stringify(data);
+    const endpoint = `${URL_ENDPOINT}api/todos/${data.id}/`;
+    const options = {
+      method: "PUT",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+        Accept: "*/*",
+      },
+      body: JSONdata,
+    };
+    const res = await fetch(endpoint, options);
+    let form = e.target.type !== 'checkbox' ? await displayTodoForm(): '';
+    // Force useSWR to refresh todos from api
+    mutate([`${URL_ENDPOINT}api/projects/`, token]);
+    mutate([`${URL_ENDPOINT}api/todos/`, token]);
+    
+    dispatch({
+      type: HANDLE_TODO_RESET
+    })
+  };
 
   const deleteTodo = async () => {
-    const id = `${state.todo.id}/`
-    let token = state.auth.token
+    const id = `${state.todo.id}/`;
+    let token = state.auth.token;
 
-    const endpoint = `${URL_ENDPOINT}api/todos/${id}`
+    const endpoint = `${URL_ENDPOINT}api/todos/${id}`;
     const options = {
       method: "DELETE",
       headers: {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
-        "Accept": "*/*"
-      }
+        Accept: "*/*",
+      },
     };
     const res = await fetch(endpoint, options);
-    console.log(res)
+
     let form = await displayTodoForm();
     // Force useSWR to refresh todos from api
-    mutate([`${URL_ENDPOINT}api/projects/`, token])
-    mutate([`${URL_ENDPOINT}api/todos/`, token])
+    mutate([`${URL_ENDPOINT}api/projects/`, token]);
+    mutate([`${URL_ENDPOINT}api/todos/`, token]);
 
     dispatch({
       type: HANDLE_TODO_RESET,
     });
-    
   };
-
 
   return (
     <AppContext.Provider
@@ -397,7 +390,7 @@ export function AppWrapper({ children }) {
         multiSelection: state.multiSelection,
         search: state.search,
         todoForm: state.todoForm,
-        projectName: state.projectName,  
+        projectName: state.projectName,
         sortSelection: state.sortSelection,
         filterSelection: state.filterSelection,
         history: state.history,
@@ -422,7 +415,7 @@ export function AppWrapper({ children }) {
         loadUser,
         login,
         logout,
-        updateTodoCompleted,
+        handleTodoClickChange,
       }}
     >
       {children}
