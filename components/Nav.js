@@ -11,7 +11,7 @@ const Nav = () => {
   // useState and useContext allow access to user with causing React Hydration Error
   const [currentUser, setCurrentUser] = useState
   ('')
-  useEffect(()=> setCurrentUser(auth.user),[])
+  useEffect(()=> setCurrentUser(auth.user),[auth.user])
 
   return (
     <nav className={navStyles.nav}>
