@@ -141,9 +141,7 @@ export default function reducers(state, action) {
     case AUTH_ERROR:
     case LOGOUT_USER:
     case LOGIN_FAIL:
-      localStorage.removeItem("token");
-      localStorage.removeItem("refresh")
-      localStorage.removeItem("user")
+      localStorage.clear()
       return {
         ...state,
         auth: {
