@@ -7,25 +7,11 @@ import { useEffect, useState } from "react";
 const Nav = () => {
   const context = useAppContext();
   const { auth, logout, loadUser, refreshJWT } = context;
-  const router = useRouter();
-  // Consider highlighting active page in navbar
-  const pathname = router.pathname;
 
-  const [currentUser, setCurrentUser] = useState(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    let user = localStorage.getItem("user");
-    let token = localStorage.getItem("token");
-    let refresh = localStorage.getItem("refresh");
-    loadUser(user);
-    let interval = setInterval(() => {
-      if (token && refresh) {
-        refreshJWT(refresh);
-      }
-    }, 240000);
-    return () => clearInterval(interval);
-  }, []);
+  // useState and useContext allow access to user with causing React Hydration Error
+  const [currentUser, setCurrentUser] = useState
+  ('')
+  useEffect(()=> setCurrentUser(auth.user),[])
 
   return (
     <nav className={navStyles.nav}>
@@ -42,7 +28,7 @@ const Nav = () => {
         {auth.user !== null ? (
           <>
             <li>
-              <Link href="/profile">{`Profile (${auth.user})`}</Link>
+              <Link href="/profile">{`Profile (${currentUser})`}</Link>
               
             </li>
             <li onClick={logout}>
