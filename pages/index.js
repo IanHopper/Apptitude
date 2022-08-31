@@ -21,7 +21,7 @@ export default function Home() {
     let refresh = localStorage.getItem("refresh");
     loadUser(user);
     // Trigger token refresh by going to /
-    if (todos.length === 0 && token && refresh && pathname === "/") {
+    if (token && refresh && pathname === "/") {
       refreshJWT(refresh)
     }
     let interval = setInterval(() => {
