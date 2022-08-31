@@ -6,7 +6,7 @@ import e from "cors";
 
 const TodoItem = ({ todo }) => {
   const context = useAppContext();
-  const { displayTodoForm, todos, projects, handleTodoClickChange } = context;
+  const { displayTodoForm, todos, projects, handleTodoClickChange, today } = context;
 
   const {
     id,
@@ -75,7 +75,8 @@ const TodoItem = ({ todo }) => {
             <FontAwesomeIcon icon={faCalendarAlt} />
           </span>
           &nbsp;
-          {due_date}
+          {due_date === today ?
+          "Today" : due_date}
         </p>
       ) : (
         <p className={todosStyles.date}>
