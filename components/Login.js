@@ -6,7 +6,7 @@ import Link from "next/link";
 
 const Login = () => {
   const context = useAppContext();
-  const { auth, login, handleLoginChange, loginCredentials } = context;
+  const { auth, login, handleFormChange, loginCredentials } = context;
   const [error, setError] = useState(false);
 
   const router = useRouter();
@@ -17,6 +17,7 @@ const Login = () => {
     <div>
       <h2>Login</h2>
       <form
+        id="login"
         className={formStyles.addform}
         onSubmit={(e) =>
           login(e, loginCredentials.username, loginCredentials.password)
@@ -45,7 +46,7 @@ const Login = () => {
             id="username"
             type="text"
             value={loginCredentials.username ? loginCredentials.username : ""}
-            onChange={handleLoginChange}
+            onChange={handleFormChange}
             required
             autoFocus
           />
@@ -69,7 +70,7 @@ const Login = () => {
             id="password"
             type="password"
             value={loginCredentials.password ? loginCredentials.password : ""}
-            onChange={handleLoginChange}
+            onChange={handleFormChange}
             required
           />
         </div>
