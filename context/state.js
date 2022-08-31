@@ -42,8 +42,6 @@ export function AppWrapper({ children }) {
       token: typeof window !== "undefined" ? localStorage.getItem("token") : "",
       rereshToken:
         typeof window !== "undefined" ? localStorage.getItem("token") : "",
-      // isLoading: false,
-      // user: null,
       user: typeof window !== "undefined" ? localStorage.getItem("user") : "",
     },
     // credentials to submit to API for login
@@ -69,7 +67,8 @@ export function AppWrapper({ children }) {
     history: [], // deleted todos that can be recreated
     search: "", // search input
     todoForm: false, // task create and update form
-    projectName: ""
+    projectName: "",
+    today: new Date().toISOString().slice(0, 10)
   };
 
   const [state, dispatch] = useReducer(reducers, initialState);
@@ -148,9 +147,7 @@ export function AppWrapper({ children }) {
     if (res.status === 200) {
       let { token, refreshToken } = await getKey();
       let decoded_token = jwtDecode(token);
-      // console.log('Refresh 200')
-      // console.log('Token', token)
-      // console.log('Refresh', refreshToken)
+ 
       dispatch({
         type: LOGIN_SUCCESS,
         payload: {
@@ -174,7 +171,7 @@ export function AppWrapper({ children }) {
 
   // Logout
   const logout = async () => {
-    // console.log("log out")
+    console.log('logout')
     dispatch({
       type: LOGOUT_USER,
     });
@@ -400,6 +397,7 @@ export function AppWrapper({ children }) {
         projects: state.projects,
         defaultTodo: state.defaultTodo,
         focus: state.focus,
+        today: state.today,
         handleSearchInput,
         handleProjectChange,
         createTodo,
