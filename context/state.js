@@ -54,7 +54,6 @@ export function AppWrapper({ children }) {
       username: null,
       email: null,
       password: null,
-      password2: null,
     },
     tasksData: {}, // object with total quantity, duration, and cost of displayed tasks
     todos: [], // todo array from API
@@ -68,11 +67,35 @@ export function AppWrapper({ children }) {
     search: "", // search input
     todoForm: false, // task create and update form
     projectName: "",
-    today: new Date().toISOString().slice(0, 10)
+    today: new Date().toISOString().slice(0, 10),
   };
 
   const [state, dispatch] = useReducer(reducers, initialState);
-
+  // Register user
+  const register = async (e, registration) => {
+    e.preventDefault();
+    const { username, email, password } = registration;
+    console.log(username, email, password)
+    const JSONdata = JSON.stringify({ username, password, email });
+    const endpoint = `${URL_ENDPOINT}register/`;
+    const options = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSONdata,
+    };
+    try {
+      const res = await fetch(endpoint, options);
+      console.log(res.status);
+      res.status == "200" ? router.push("about") : setUnique_Username(false);
+      let data = await res.json();
+      router.push("/login");
+      return data;
+    } catch (error) {
+      console.log(error);
+    }
+  };
   // Login user
   const login = async (e, username, password) => {
     e.preventDefault();
@@ -116,12 +139,21 @@ export function AppWrapper({ children }) {
   };
 
   // Handle change in login form
-  const handleLoginChange = (e) => {
+  const handleFormChange = (e) => {
     const { id, value } = e.target;
-    dispatch({
-      type: HANDLE_LOGIN_CHANGE,
-      payload: { id, value },
-    });
+    console.log(e.target.parentNode.parentNode.id);
+    const page = e.target.parentNode.parentNode.id;
+    if (page === "login") {
+      dispatch({
+        type: HANDLE_LOGIN_CHANGE,
+        payload: { id, value },
+      });
+    } else if (page === "registration") {
+      dispatch({
+        type: HANDLE_REGISTER_CHANGE,
+        payload: { id, value },
+      });
+    }
   };
 
   // Refresh tokens
@@ -147,7 +179,7 @@ export function AppWrapper({ children }) {
     if (res.status === 200) {
       let { token, refreshToken } = await getKey();
       let decoded_token = jwtDecode(token);
- 
+
       dispatch({
         type: LOGIN_SUCCESS,
         payload: {
@@ -171,7 +203,7 @@ export function AppWrapper({ children }) {
 
   // Logout
   const logout = async () => {
-    console.log('logout')
+    console.log("logout");
     dispatch({
       type: LOGOUT_USER,
     });
@@ -242,6 +274,7 @@ export function AppWrapper({ children }) {
     });
   };
 
+  // Create project
   const createProject = async (projectName) => {
     const data = {
       project_name: projectName,
@@ -268,6 +301,7 @@ export function AppWrapper({ children }) {
     });
   };
 
+  // Create todo
   const createTodo = async () => {
     const todo = state.todo;
     const data = {
@@ -312,8 +346,9 @@ export function AppWrapper({ children }) {
     });
   };
 
+  // Update or delete Todo
   const handleTodoClickChange = async (e, todo) => {
-    
+    let changeType = e.target.name;
     let token = state.auth.token;
     const data = {
       task_name: todo.task_name,
@@ -325,7 +360,7 @@ export function AppWrapper({ children }) {
       id: todo.id,
       project: todo.project,
       completed:
-        e.target.type === 'checkbox'
+        e.target.type === "checkbox"
           ? e.target.checked === true
           : todo.completed,
       deleted: e.target.name === "delete-button" ? true : todo.deleted,
@@ -342,16 +377,17 @@ export function AppWrapper({ children }) {
       body: JSONdata,
     };
     const res = await fetch(endpoint, options);
-    let form = e.target.type !== 'checkbox' ? await displayTodoForm(): '';
+    let form = e.target.type !== "checkbox" ? await displayTodoForm() : "";
     // Force useSWR to refresh todos from api
     mutate([`${URL_ENDPOINT}api/projects/`, token]);
     mutate([`${URL_ENDPOINT}api/todos/`, token]);
-    
+    console.log(changeType);
     dispatch({
-      type: HANDLE_TODO_RESET
-    })
+      type: HANDLE_TODO_RESET,
+    });
   };
 
+  // Currently not in use since this permanently deletes from DB
   const deleteTodo = async () => {
     const id = `${state.todo.id}/`;
     let token = state.auth.token;
@@ -403,7 +439,7 @@ export function AppWrapper({ children }) {
         createTodo,
         createProject,
         cancelTodo,
-        handleLoginChange,
+        handleFormChange,
         handleInputChange,
         displayTodoForm,
         deleteTodo,
@@ -414,6 +450,7 @@ export function AppWrapper({ children }) {
         login,
         logout,
         handleTodoClickChange,
+        register,
       }}
     >
       {children}
