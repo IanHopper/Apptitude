@@ -10,7 +10,8 @@ const ProjectList = ({ projects }) => {
     projectName,
     handleProjectChange,
     auth,
-    todos
+    todos,
+    today
   } = context;
 
   let token = auth.token;
@@ -26,12 +27,14 @@ const ProjectList = ({ projects }) => {
     let count = [];
     if (todos && todos.length > 0) {
       // Filter out deleted todos
-      todos = todos.filter((todo) => !todo.deleted);
-      if (name !== "Today") {
-        count = todos.filter((todo) => todo.project_name === name)
+      let activeTodos = todos.filter((todo) => !todo.deleted);
+      if (name === "All") {
+        count = activeTodos
+      }
+      else if (name !== "Today") {
+        count = activeTodos.filter((todo) => todo.project_name === name)
       } else {
-        // count = todos.filter((todo)=> todo.due_date = new Date().toISOString().slice(0, 10))
-        // count = todos.filter((todo)=> todo.due_date = new Date().toISOString().slice(0, 10))
+        count = activeTodos.filter((todo) => todo.due_date === today)
       }
     }
     return count.length
@@ -69,7 +72,7 @@ const ProjectList = ({ projects }) => {
           className={todosStyles.card}
           onClick={setFocus}
         >
-          All Projects
+          All Projects {todoCount("All")}
         </div>
 
         <div className={todosStyles.title}>
@@ -102,7 +105,7 @@ const ProjectList = ({ projects }) => {
               className={todosStyles.card}
               onClick={setFocus}
             >
-              {project.project_name}
+              {project.project_name} {todoCount(project.project_name)}
             </div>
           ))}
       </div>
