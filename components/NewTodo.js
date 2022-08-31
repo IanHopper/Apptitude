@@ -39,11 +39,11 @@ const NewTodo = ({  }) => {
         </div>
         <div className={todosStyles.formControl}>
           <select
-            value={todo.project}
+            value={todo.project !== null ? todo.project : ""}
             onChange={handleInputChange}
             id="project"
           >
-            <option key={""} value={false}>
+            <option key={""} value={""}>
               Inbox
             </option>
             {projects && projects.length > 0
@@ -109,16 +109,19 @@ const NewTodo = ({  }) => {
         </div>
         <div className={todosStyles.formControl}>
           <input
-            className={todosStyles.saveTodo}
+            className={todosStyles.inputTodo}
             type="submit"
             value="Save Task"
           />
-          {todo.id !== undefined && <button
-            className={todosStyles.saveTodo}
+          
+          {todo.id !== undefined && <input
+            className={todosStyles.inputTodo}
+            type="button"
             name = "delete-button"
             style={{background: 'red'}}
             onClick={(e) => handleTodoClickChange(e,todo)}
-          >Delete Task</button>}
+            value="Delete"
+          />}
           
      
           
