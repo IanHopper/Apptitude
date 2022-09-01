@@ -1,19 +1,20 @@
 import todosStyles from "../styles/Todos.module.css";
 import TodoItem from "./TodoItem";
 import { useAppContext } from "../context/state";
-import NewTodo from "./NewTodo";
+import NewTodo from "./TodoForm";
 import NewTaskButton from "./NewTaskButton";
 import Search from "./Search";
 import ProjectList from "./ProjectList";
 import { faClock } from "@fortawesome/free-solid-svg-icons";
+import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const TodoList = () => {
   const context = useAppContext();
-  const { todoForm, search, focus, projects, todos, todo } = context;
+  const { todoForm, search, focus, projects, todos, todo, deleteProject } = context;
   const heading = focus;
-
   if (todos && todos.length > 0) {
+    let deletedTodos = todos.filter((todo) => todo.deleted);
     // Filter out deleted todos
     todos = todos.filter((todo) => !todo.deleted);
 
@@ -57,9 +58,9 @@ const TodoList = () => {
       }
     }
     if (quantity === "duration") {
-      return projectDuration > 0 ? `${projectDuration}m` : "";
+      return projectDuration > 0 ? `${projectDuration}m` : "0m";
     } else if (quantity === "cost") {
-      return projectCost > 0 ? `$${projectCost}` : "";
+      return projectCost > 0 ? `$${projectCost}` : "$0";
     }
   };
 
@@ -87,24 +88,49 @@ const TodoList = () => {
             <div className={todosStyles.tasksHeader}>
               <div className={`${todosStyles.projectFocus}`}>
                 {focus}{" "}
-
-                <span className={todosStyles.projectDuration}>
-                  <span>
-                    <FontAwesomeIcon icon={faClock} />
-                  </span>{" "}
-                  {projectTotal(todos, "duration")}
-                </span>{" "}
-                <span className={todosStyles.projectCost}>
-                  {projectTotal(todos, "cost")}
-                </span>
+                {focus !== "Deleted Tasks" ? (
+                  <>
+                    <span className={todosStyles.projectDuration}>
+                      <span>
+                        <FontAwesomeIcon icon={faClock} />
+                      </span>{" "}
+                      {projectTotal(todos, "duration")}
+                    </span>{" "}
+                    <span className={todosStyles.projectCost}>
+                      {projectTotal(todos, "cost")}
+                    </span>
+                  </>
+                ) : (
+                  ""
+                )}
+                {focus !== "Inbox" &&
+                focus !== "Today" &&
+                focus !== "All Projects" &&
+                focus !== "Deleted Tasks" ? (
+                  <FontAwesomeIcon
+                    icon={faTrash}
+                    className={todosStyles.trashIcon}
+                    onClick={deleteProject}
+                  />
+                ) : (
+                  ""
+                )}
               </div>
               <NewTaskButton />
               <Search />
             </div>
 
-            {todos &&
+            {typeof todos !== "undefined" &&
+              focus !== "Deleted Tasks" &&
               todos.length > 0 &&
               todos
+                .map((todo) => <TodoItem todo={todo} key={todo.id}></TodoItem>)
+                .reverse()}
+            {typeof deletedTodos !== "undefined" &&
+              deletedTodos.length > 0 &&
+              focus === "Deleted Tasks" &&
+              deletedTodos.length > 0 &&
+              deletedTodos
                 .map((todo) => <TodoItem todo={todo} key={todo.id}></TodoItem>)
                 .reverse()}
           </div>

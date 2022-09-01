@@ -37,7 +37,8 @@ export default function reducers(state, action) {
     case SET_FOCUS:
       return {
         ...state,
-        focus: action.payload
+        focus: action.payload.focus,
+        activeProject: action.payload.activeProject
       };
     case HANDLE_FILTER:
       return {

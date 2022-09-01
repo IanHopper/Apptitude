@@ -61,6 +61,12 @@
   color: lightslategray;
 }
 
+.trashIcon {
+  color: lightgrey;
+  scale: 80%;
+  padding-left: 40px;
+}
+
 .projectCost {
   color: rgb(101, 194, 101);
   font-size: 1rem;

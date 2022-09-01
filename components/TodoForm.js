@@ -3,16 +3,22 @@ import { faClock, faCalendarAlt } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useAppContext } from "../context/state";
 
-
-const NewTodo = ({  }) => {
+const NewTodo = ({}) => {
   const context = useAppContext();
-  const { todo, createTodo, handleInputChange, projects, handleTodoClickChange, project} = context;
-  
+  const {
+    todo,
+    createTodo,
+    handleInputChange,
+    projects,
+    handleTodoClickChange,
+    project,
+  } = context;
+
   const handleTodoSubmit = (e) => {
     e.preventDefault();
     createTodo();
   };
-  
+
   const priorityList = {
     1: todosStyles.vital,
     2: todosStyles.important,
@@ -20,11 +26,13 @@ const NewTodo = ({  }) => {
     4: todosStyles.trivial,
   };
 
-
-
   return (
     <div>
-      <form onSubmit={handleTodoSubmit} className={todosStyles.formcard} noValidate>
+      <form
+        onSubmit={handleTodoSubmit}
+        className={todosStyles.formcard}
+        noValidate
+      >
         <div className={`${todosStyles.formControl}`}>
           <input
             id="task_name"
@@ -52,7 +60,7 @@ const NewTodo = ({  }) => {
                     {project.project_name}
                   </option>
                 ))
-              : ''}
+              : ""}
           </select>
         </div>
         <div className={todosStyles.formControl}>
@@ -95,7 +103,6 @@ const NewTodo = ({  }) => {
             onChange={handleInputChange}
             step="any"
             placeholder="$"
-            
           />
         </div>
         <div className={todosStyles.formControl}>
@@ -108,23 +115,28 @@ const NewTodo = ({  }) => {
           />
         </div>
         <div className={todosStyles.formControl}>
-          <input
-            className={todosStyles.inputTodo}
-            type="submit"
-            value="Save Task"
-          />
-          
-          {todo.id !== undefined && <input
-            className={todosStyles.inputTodo}
-            type="button"
-            name = "delete-button"
-            style={{background: 'red'}}
-            onClick={(e) => handleTodoClickChange(e,todo)}
-            value="Delete"
-          />}
-          
-     
-          
+          {!todo.deleted ? (
+            <input
+              className={todosStyles.inputTodo}
+              type="submit"
+              value="Save Task"
+            />
+          ) : (
+            ""
+          )}
+
+          {todo.id !== undefined && (
+            <input
+              className={todosStyles.inputTodo}
+              type="button"
+              name="delete-button"
+              style={
+                todo.deleted ? { background: "green" } : { background: "red" }
+              }
+              onClick={(e) => handleTodoClickChange(e, todo)}
+              value={todo.deleted ? " Save and Restore Task" : "Delete"}
+            />
+          )}
         </div>
       </form>
     </div>

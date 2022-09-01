@@ -61,6 +61,7 @@ export function AppWrapper({ children }) {
       project: null,
     }, // current todo
     focus: "All Projects",
+    activeProject: '',
     multiSelection: [], // multiple selections for group editing
     projects: [], // array derived from projects in objects in todos
     history: [], // deleted todos that can be recreated
@@ -244,10 +245,11 @@ export function AppWrapper({ children }) {
 
   const setFocus = (e) => {
     const focus = e.target.id;
-
+    const activeProject = e.target.dataset.key
+    console.log(focus, activeProject)
     dispatch({
       type: SET_FOCUS,
-      payload: focus,
+      payload: {focus, activeProject }
     });
   };
 
@@ -300,6 +302,36 @@ export function AppWrapper({ children }) {
       type: HANDLE_PROJECT_RESET,
     });
   };
+
+  // Delete project
+  const deleteProject = async () => {
+    const id = state.activeProject
+    let token = state.auth.token;
+    const endpoint = `${URL_ENDPOINT}api/projects/${id}`;
+    const options = {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+        Accept: "*/*",
+      },
+    };
+    const res = await fetch(endpoint, options);
+    // Force useSWR to refresh projects from api
+    mutate([`${URL_ENDPOINT}api/projects/`, token]);
+    mutate([`${URL_ENDPOINT}api/todos/`, token]);
+
+    dispatch({
+      type: HANDLE_PROJECT_RESET,
+      
+    });
+    const activeProject = ''
+    const focus = 'All Projects'
+    dispatch({
+      type: SET_FOCUS,
+      payload: {focus, activeProject}
+    })
+  }
 
   // Create todo
   const createTodo = async () => {
@@ -363,7 +395,7 @@ export function AppWrapper({ children }) {
         e.target.type === "checkbox"
           ? e.target.checked === true
           : todo.completed,
-      deleted: e.target.name === "delete-button" ? true : todo.deleted,
+      deleted: e.target.name === "delete-button" ? todo.deleted = !todo.deleted: todo.deleted,
     };
     const JSONdata = JSON.stringify(data);
     const endpoint = `${URL_ENDPOINT}api/todos/${data.id}/`;
@@ -434,6 +466,7 @@ export function AppWrapper({ children }) {
         defaultTodo: state.defaultTodo,
         focus: state.focus,
         today: state.today,
+        activeProject: state.activeProject,
         handleSearchInput,
         handleProjectChange,
         createTodo,
@@ -451,6 +484,7 @@ export function AppWrapper({ children }) {
         logout,
         handleTodoClickChange,
         register,
+        deleteProject,
       }}
     >
       {children}

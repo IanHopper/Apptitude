@@ -26,6 +26,11 @@ const ProjectList = ({ projects }) => {
   const todoCount = (name) => {
     let count = [];
     if (todos && todos.length > 0) {
+      if (name === "Deleted Tasks") {
+        let deletedTodos = todos.filter((todo) => todo.deleted);
+        return deletedTodos.length
+      }
+      
       // Filter out deleted todos
       let activeTodos = todos.filter((todo) => !todo.deleted);
       if (name === "All") {
@@ -74,6 +79,15 @@ const ProjectList = ({ projects }) => {
         >
           All Projects {todoCount("All")}
         </div>
+        <div
+          key={"Deleted Tasks"}
+          id={"Deleted Tasks"}
+          style={focus === "Deleted Tasks" ? { fontWeight: "bold" } : null}
+          className={todosStyles.card}
+          onClick={setFocus}
+        >
+          Deleted Tasks {todoCount("Deleted Tasks")}
+        </div>
 
         <div className={todosStyles.title}>
           <h3>Projects</h3>
@@ -98,6 +112,7 @@ const ProjectList = ({ projects }) => {
           projects.map((project) => (
             <div
               key={project.id}
+              data-key={project.id}
               id={project.project_name}
               style={
                 focus === project.project_name ? { fontWeight: "bold" } : null
