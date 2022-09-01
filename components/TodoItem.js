@@ -31,14 +31,18 @@ const TodoItem = ({ todo }) => {
     e.target.type === 'checkbox'? console.log('checkbox'): displayTodoForm(e, todos, (id=todo.id))
   }
 
-  // 
+  // Grey out completed todos
+  const completedCheck = () => {
+    const completedClass = completed ? todosStyles.completed : ''
+    return completedClass
+  }
 
   return (
     <div id={id}
     
     onClick={(e) => checkOrEdit(e)}
     
-      className={`${todosStyles.card} ${todosStyles.todo}`}
+      className={`${todosStyles.card} ${todosStyles.todo} ${completedCheck()}`}
     >
       <div className={todosStyles.taskname}>
         <p className ='item-completed'>
