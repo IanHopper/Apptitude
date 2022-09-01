@@ -56,6 +56,16 @@
   color:#0070f3;
 }
 
+.projectDuration {
+  font-size: 1rem;
+  color: lightslategray;
+}
+
+.projectCost {
+  color: rgb(101, 194, 101);
+  font-size: 1rem;
+}
+
 
 .formcard {
   margin: 0.2rem;
@@ -93,6 +103,11 @@
     'description description description description description . .'
     'description description description description description . .'
     ;
+}
+
+.completed p {
+  color: rgb(227, 225, 225);
+  text-decoration: line-through;
 }
 
 .card:hover,
