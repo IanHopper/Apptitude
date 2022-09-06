@@ -31,7 +31,8 @@ import {
   HANDLE_PROJECT_CHANGE,
   HANDLE_PROJECT_RESET,
 } from "./types";
-import { Router } from "next/router";
+import Router, { useRouter } from "next/router";
+
 
 const AppContext = createContext();
 
@@ -90,9 +91,12 @@ export function AppWrapper({ children }) {
     try {
       const res = await fetch(endpoint, options);
       console.log(res.status);
-      res.status == "200" ? router.push("about") : setUnique_Username(false);
+      res.status == "200" ? Router.replace("/login") : setUnique_Username(false);
       let data = await res.json();
-      router.push("/login");
+ 
+      dispatch({
+        type: HANDLE_REGISTER_SUCCESS,
+      });
       return data;
     } catch (error) {
       console.log(error);
@@ -127,6 +131,7 @@ export function AppWrapper({ children }) {
     if (res.status === 200) {
       let { token, refreshToken } = await getKey();
       let decoded_token = jwtDecode(token);
+      Router.replace('/')
       dispatch({
         type: LOGIN_SUCCESS,
         payload: {

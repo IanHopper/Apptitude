@@ -113,16 +113,8 @@ export default function reducers(state, action) {
         },
       };
     case HANDLE_REGISTER_SUCCESS:
-      localStorage.setItem("token", action.payload.token);
       return {
         ...state,
-        ...action.payload,
-        auth: {
-          ...state.auth,
-     
-          isLoading: false,
-          user: action.payload.user,
-        },
         registration: {
           username: null,
           email: null,
