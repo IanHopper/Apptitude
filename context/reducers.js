@@ -166,6 +166,7 @@ export default function reducers(state, action) {
           refreshToken: action.payload.refreshToken,
           isLoading: false,
           user: action.payload.user,
+          isLoggedIn: true,
         },
         loginCredentials: {
           username: null,

@@ -43,6 +43,7 @@ export function AppWrapper({ children }) {
       rereshToken:
         typeof window !== "undefined" ? localStorage.getItem("token") : "",
       user: typeof window !== "undefined" ? localStorage.getItem("user") : "",
+      isLoggedIn: false,
     },
     // credentials to submit to API for login
     loginCredentials: {
@@ -132,6 +133,7 @@ export function AppWrapper({ children }) {
           token: token,
           refreshToken: refreshToken,
           user: decoded_token.username,
+          isLoggedIn: true,
         },
       });
     } else {

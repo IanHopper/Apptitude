@@ -17,7 +17,7 @@ const Nav = () => {
     <nav className={navStyles.nav}>
       <ul>
         <li>
-          <Link href="/">
+          <Link href={auth.user ? "/": "/login"}>
             <h1>
               <span className={navStyles.brand}>App</span>titude
             </h1>
