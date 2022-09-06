@@ -200,8 +200,8 @@
   color: rgb(41, 154, 247);
 }
 
-.trivial p {
-  color: pink;
+.trivial {
+  color: rgb(174, 166, 167);
 }
 
 .formControl {

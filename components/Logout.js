@@ -7,6 +7,9 @@ const Logout = () => {
   return (
     <div>
       <h2>You are now logged out</h2>
+      <Link href="/login">
+      <a>Login again</a>
+      </Link>
     </div>
   );
 };
