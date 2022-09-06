@@ -34,6 +34,9 @@ const Nav = () => {
             <li onClick={logout}>
               <Link href="/logout">{`Logout`}</Link>
             </li>
+            <li >
+              <Link href="/about">About</Link>
+            </li>
           </>
         ) : (
           <>
@@ -43,8 +46,8 @@ const Nav = () => {
             <li>
               <Link href="/register">Register</Link>
             </li>
-            <li style={{ fontWeight: "bold", fontSize: "1.2rem" }}>
-              <Link href="/about">?</Link>
+            <li >
+              <Link href="/about">About</Link>
             </li>
           </>
         )}

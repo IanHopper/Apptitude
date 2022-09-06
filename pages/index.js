@@ -3,7 +3,7 @@ import useSWR from "swr";
 import TodoList from "../components/TodoList";
 import { useAppContext } from "../context/state";
 import { URL_ENDPOINT } from "../context/types";
-import { useEffect, useState } from "react";
+import { useEffect} from "react";
 import Router, { useRouter } from "next/router";
 
 export default function Home() {

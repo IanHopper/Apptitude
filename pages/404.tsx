@@ -6,4 +6,4 @@ const Server404 = () => {
   )
 }
 
-export default Server404
+export default Server404;
