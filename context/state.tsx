@@ -68,7 +68,6 @@ export function AppWrapper({ children }) {
   const register = async (e, registration) => {
     e.preventDefault();
     const { username, email, password } = registration;
-    console.log(username, email, password);
     const JSONdata = JSON.stringify({ username, password, email });
     const endpoint = `${URL_ENDPOINT}register/`;
     const options = {
@@ -141,7 +140,6 @@ export function AppWrapper({ children }) {
   // Handle change in login form
   const handleFormChange = (e) => {
     const { id, value } = e.target;
-    console.log(e.target.parentNode.parentNode.id);
     const page = e.target.parentNode.parentNode.id;
     if (page === "login") {
       dispatch({
@@ -159,7 +157,6 @@ export function AppWrapper({ children }) {
   // Refresh tokens
   const refreshJWT = async () => {
     const refresh = localStorage.getItem("refresh");
-    console.log("refresh ran");
     const JSONdata = JSON.stringify({ refresh: refresh });
     const endpoint = `${URL_ENDPOINT}login/refresh/`;
     const options = {
@@ -203,7 +200,6 @@ export function AppWrapper({ children }) {
 
   // Logout
   const logout = async () => {
-    console.log("logout");
     dispatch({
       type: LOGOUT_USER,
     });
@@ -244,7 +240,6 @@ export function AppWrapper({ children }) {
   const setFocus = (e) => {
     const focus = e.target.id;
     const activeProject = e.target.dataset.key;
-    console.log(focus, activeProject);
     dispatch({
       type: SET_FOCUS,
       payload: { focus, activeProject },
@@ -419,7 +414,6 @@ export function AppWrapper({ children }) {
     // Force useSWR to refresh todos from api
     mutate([`${URL_ENDPOINT}api/projects/`, token]);
     mutate([`${URL_ENDPOINT}api/todos/`, token]);
-    console.log(changeType);
     dispatch({
       type: HANDLE_TODO_RESET,
     });
