@@ -30,3 +30,4 @@ export const PRODUCTION_URL = "https://django-nextjs-apptitude.herokuapp.com/"
 export const URL_ENDPOINT = DEBUG ? DEV_URL : PRODUCTION_URL
 export const LOAD_USER = 'LOAD_USER'
 export const HANDLE_PROJECT_CHANGE = 'HANDLE_PROJECT_CHANGE'
+export const HANDLE_PROJECT_RESET = 'HANDLE_PROJECT_RESET'

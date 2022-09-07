@@ -8,7 +8,7 @@ import Router, { useRouter } from "next/router";
 
 export default function Home() {
   const context = useAppContext();
-  const { updateTodos, auth, todos, projects, loadUser, refreshJWT } = context;
+  const { updateTodos, auth, loadUser, refreshJWT } = context;
 
   // Router used to check
   const router = useRouter();
@@ -20,7 +20,7 @@ export default function Home() {
     let token = localStorage.getItem("token");
     let refresh = localStorage.getItem("refresh");
     loadUser(user);
-    // Trigger token refresh by going to /
+    // Trigger token refresh by going to "/""
     if (token && refresh && pathname === "/") {
       refreshJWT(refresh);
     } else {
@@ -32,7 +32,7 @@ export default function Home() {
       }
     }, 100000);
     return () => clearInterval(interval);
-  }, []);
+  },[]);
 
   let token = auth.token;
   const todosUrl = `${URL_ENDPOINT}api/todos/`;
@@ -70,7 +70,7 @@ export default function Home() {
         <meta name="description" content="Appostalic web development" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <TodoList todos={todos} projects={projects} />
+      <TodoList/>
     </div>
   );
 }
