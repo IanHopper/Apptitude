@@ -8,65 +8,66 @@ import ProjectList from "./ProjectList";
 import { faClock } from "@fortawesome/free-solid-svg-icons";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Key } from "react";
+
 
 const TodoList = () => {
   const context = useAppContext();
   const { todoForm, search, focus, projects, todos, todo, deleteProject } = context;
-  const heading = focus;
+  let heading = focus;
+  let filteredTodos: {id: number, task_name: string, due_date: string, project: number, project_name: string, completed: boolean, duration: number, cost: number, priority: number, deleted: boolean}[] = todos;
+  let deletedTodos: (object)[] = []
   if (todos && todos.length > 0) {
-    let deletedTodos = todos.filter((todo) => todo.deleted);
-    // Filter out deleted todos
-    todos = todos.filter((todo) => !todo.deleted);
+    deletedTodos = filteredTodos.filter((todo: { deleted: boolean; }) => todo.deleted);
+    filteredTodos = filteredTodos.filter((todo: { deleted: boolean; }) => !todo.deleted);
 
     if (search) {
-      todos = todos.filter((todo) =>
+      filteredTodos = filteredTodos.filter((todo: { task_name: string; }) =>
         todo.task_name.toUpperCase().includes(search.toUpperCase())
       );
     }
 
     if (focus === "Inbox") {
-      todos = todos.filter((todo) => todo.project === null);
+      filteredTodos = filteredTodos.filter((todo: { project: any; }) => todo.project === null);
     }
 
     if (focus === "Today") {
-      todos = todos.filter(
-        (todo) => todo.due_date === new Date().toISOString().slice(0, 10)
+      filteredTodos = filteredTodos.filter(
+        (todo: { due_date: string; }) => todo.due_date === new Date().toISOString().slice(0, 10)
       );
     }
 
     if (focus !== "Inbox" && focus !== "Today" && focus !== "All Projects") {
-      todos = todos.filter((todo) => todo.project_name === focus);
+      filteredTodos = filteredTodos.filter((todo: { project_name: any; }) => todo.project_name === focus);
     }
     // Sort tasks by priority
-    todos = todos.sort(function (a, b) {
+    filteredTodos = filteredTodos.sort(function (a: { priority: number; }, b: { priority: number; }) {
       return b.priority - a.priority;
     });
     // Sort completed tasks to the bottom
-    todos = todos.sort(function (a, b) {
-      return b.completed - a.completed;
-    });
+    filteredTodos = filteredTodos.sort((a: {completed:boolean}, b: {completed:boolean}) => Number(b.completed) - Number(a.completed));
   }
-
-  const projectTotal = (todos, quantity) => {
-    const projectCost = 0;
-    const projectDuration = 0;
-    if (typeof todos === "object" && todos.length > 0) {
-      todos = todos.filter((todo) => !todo.completed);
-      for (todo of todos) {
-        projectDuration += todo.duration;
-        projectCost += parseFloat(todo.cost);
+  
+  const projectTotal = (projectTodos: {completed: boolean, duration: number, cost: number}[], quantityType: string) => {
+    let projectCost = 0;
+    let projectDuration = 0;
+    if (typeof projectTodos === "object" && projectTodos.length > 0) {
+      projectTodos = projectTodos.filter((tod:{completed:boolean}) => !tod.completed);
+      for (let tod of projectTodos) {
+        projectDuration += tod.duration;
+        projectCost += parseFloat(tod.cost.toString());
       }
     }
-    if (quantity === "duration") {
+    if (quantityType === "duration") {
       return projectDuration > 0 ? `${projectDuration}m` : "0m";
-    } else if (quantity === "cost") {
+    } else if (quantityType === "cost") {
       return projectCost > 0 ? `$${projectCost}` : "$0";
     }
   };
 
   if (todoForm) {
     heading =
-      todo.id !== undefined ? `Edit ${todo.task_name}` : "Create a New Task";
+      todo.id !== undefined ? "Edit Task" : "Create a New Task";
   }
 
   return (
@@ -80,7 +81,7 @@ const TodoList = () => {
             <NewTaskButton />
             <Search />
           </div>
-          <NewTodo projects={projects} />
+          <NewTodo/>
         </div>
       ) : (
         <>
@@ -94,19 +95,19 @@ const TodoList = () => {
                       <span>
                         <FontAwesomeIcon icon={faClock} />
                       </span>{" "}
-                      {projectTotal(todos, "duration")}
+                      {projectTotal(filteredTodos, "duration")}
                     </span>{" "}
                     <span className={todosStyles.projectCost}>
-                      {projectTotal(todos, "cost")}
+                      {projectTotal(filteredTodos, "cost")}
                     </span>
                   </>
                 ) : (
                   ""
                 )}
                 {focus !== "Inbox" &&
-                focus !== "Today" &&
-                focus !== "All Projects" &&
-                focus !== "Deleted Tasks" ? (
+                  focus !== "Today" &&
+                  focus !== "All Projects" &&
+                  focus !== "Deleted Tasks" ? (
                   <FontAwesomeIcon
                     icon={faTrash}
                     className={todosStyles.trashIcon}
@@ -120,18 +121,18 @@ const TodoList = () => {
               <Search />
             </div>
 
-            {typeof todos !== "undefined" &&
+            {typeof filteredTodos !== "undefined" &&
               focus !== "Deleted Tasks" &&
-              todos.length > 0 &&
-              todos
-                .map((todo) => <TodoItem todo={todo} key={todo.id}></TodoItem>)
+              filteredTodos.length > 0 &&
+              filteredTodos
+                .map((todo: { id: Key; }) => <TodoItem todo={todo} key={todo.id}></TodoItem>)
                 .reverse()}
             {typeof deletedTodos !== "undefined" &&
               deletedTodos.length > 0 &&
               focus === "Deleted Tasks" &&
               deletedTodos.length > 0 &&
               deletedTodos
-                .map((todo) => <TodoItem todo={todo} key={todo.id}></TodoItem>)
+                .map((todo: { id: Key; }) => <TodoItem todo={todo} key={todo.id}></TodoItem>)
                 .reverse()}
           </div>
         </>

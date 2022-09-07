@@ -33,7 +33,6 @@ import {
 } from "./types";
 import Router, { useRouter } from "next/router";
 
-
 const AppContext = createContext();
 
 export function AppWrapper({ children }) {
@@ -63,7 +62,7 @@ export function AppWrapper({ children }) {
       project: null,
     }, // current todo
     focus: "All Projects",
-    activeProject: '',
+    activeProject: "",
     multiSelection: [], // multiple selections for group editing
     projects: [], // array derived from projects in objects in todos
     history: [], // deleted todos that can be recreated
@@ -78,7 +77,7 @@ export function AppWrapper({ children }) {
   const register = async (e, registration) => {
     e.preventDefault();
     const { username, email, password } = registration;
-    console.log(username, email, password)
+    console.log(username, email, password);
     const JSONdata = JSON.stringify({ username, password, email });
     const endpoint = `${URL_ENDPOINT}register/`;
     const options = {
@@ -91,9 +90,11 @@ export function AppWrapper({ children }) {
     try {
       const res = await fetch(endpoint, options);
       console.log(res.status);
-      res.status == "200" ? Router.replace("/login") : setUnique_Username(false);
+      res.status == "200"
+        ? Router.replace("/login")
+        : setUnique_Username(false);
       let data = await res.json();
- 
+
       dispatch({
         type: HANDLE_REGISTER_SUCCESS,
       });
@@ -131,7 +132,7 @@ export function AppWrapper({ children }) {
     if (res.status === 200) {
       let { token, refreshToken } = await getKey();
       let decoded_token = jwtDecode(token);
-      Router.replace('/')
+      Router.replace("/");
       dispatch({
         type: LOGIN_SUCCESS,
         payload: {
@@ -235,8 +236,7 @@ export function AppWrapper({ children }) {
     });
   };
 
-  const displayTodoForm = (e, todos, id) => {
-    id && console.log(id);
+  const displayTodoForm = (todos, id) => {
     const todo = id
       ? todos.filter((todo) => {
           return todo.id === id;
@@ -252,11 +252,11 @@ export function AppWrapper({ children }) {
 
   const setFocus = (e) => {
     const focus = e.target.id;
-    const activeProject = e.target.dataset.key
-    console.log(focus, activeProject)
+    const activeProject = e.target.dataset.key;
+    console.log(focus, activeProject);
     dispatch({
       type: SET_FOCUS,
-      payload: {focus, activeProject }
+      payload: { focus, activeProject },
     });
   };
 
@@ -312,7 +312,7 @@ export function AppWrapper({ children }) {
 
   // Delete project
   const deleteProject = async () => {
-    const id = state.activeProject
+    const id = state.activeProject;
     let token = state.auth.token;
     const endpoint = `${URL_ENDPOINT}api/projects/${id}`;
     const options = {
@@ -330,15 +330,14 @@ export function AppWrapper({ children }) {
 
     dispatch({
       type: HANDLE_PROJECT_RESET,
-      
     });
-    const activeProject = ''
-    const focus = 'All Projects'
+    const activeProject = "";
+    const focus = "All Projects";
     dispatch({
       type: SET_FOCUS,
-      payload: {focus, activeProject}
-    })
-  }
+      payload: { focus, activeProject },
+    });
+  };
 
   // Create todo
   const createTodo = async () => {
@@ -402,7 +401,10 @@ export function AppWrapper({ children }) {
         e.target.type === "checkbox"
           ? e.target.checked === true
           : todo.completed,
-      deleted: e.target.name === "delete-button" ? todo.deleted = !todo.deleted: todo.deleted,
+      deleted:
+        e.target.name === "delete-button"
+          ? (todo.deleted = !todo.deleted)
+          : todo.deleted,
     };
     const JSONdata = JSON.stringify(data);
     const endpoint = `${URL_ENDPOINT}api/todos/${data.id}/`;

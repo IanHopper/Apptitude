@@ -2,11 +2,11 @@ import todosStyles from "../styles/Todos.module.css";
 import { faClock, faCalendarAlt } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useAppContext } from "../context/state";
-import e from "cors";
+import React from "react";
 
 const TodoItem = ({ todo }) => {
   const context = useAppContext();
-  const { displayTodoForm, todos, projects, handleTodoClickChange, today } = context;
+  const { displayTodoForm, todos, handleTodoClickChange, today } = context;
 
   const {
     id,
@@ -27,8 +27,9 @@ const TodoItem = ({ todo }) => {
     4: todosStyles.trivial,
   };
 
+
   const checkOrEdit = (e) => {
-    e.target.type === 'checkbox'? console.log('checkbox'): displayTodoForm(e, todos, (id=todo.id))
+    e.target.id.includes('checkbox')  ? '': displayTodoForm(todos, todo.id);
   }
 
   // Grey out completed todos

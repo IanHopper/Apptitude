@@ -1,5 +1,6 @@
 import todosStyles from "../styles/Todos.module.css";
 import { useAppContext } from "../context/state";
+import { Key } from "react";
 
 const ProjectList = ({ projects }) => {
   const context = useAppContext();
@@ -24,6 +25,7 @@ const ProjectList = ({ projects }) => {
 
   const todoCount = (name: string) => {
     let count: (object)[]  = [];
+    
     if (todos && todos.length > 0) {
       if (name === "Deleted Tasks") {
         let deletedTodos = todos.filter((todo) => todo.deleted);
@@ -41,12 +43,9 @@ const ProjectList = ({ projects }) => {
         count = activeTodos.filter((todo) => todo.due_date === today)
       }
     }
-    return count.length
+    const totalTodos:number = count.length
+    return totalTodos
   };
-
-  // const todoCount = () => {
-  //   todos = todos.filter((todo) => todo.project_name === focus);
-  // }
 
   return (
     <>
@@ -108,7 +107,7 @@ const ProjectList = ({ projects }) => {
         </div>
         {projects &&
           projects.length > 0 &&
-          projects.map((project) => (
+          projects.map((project: { id: Key; project_name: string}) => (
             <div
               key={project.id}
               data-key={project.id}

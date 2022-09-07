@@ -1,7 +1,6 @@
 import todosStyles from "../styles/Todos.module.css";
-import { faClock, faCalendarAlt } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useAppContext } from "../context/state";
+import React from "react";
 
 const NewTodo = ({}) => {
   const context = useAppContext();
@@ -11,10 +10,9 @@ const NewTodo = ({}) => {
     handleInputChange,
     projects,
     handleTodoClickChange,
-    project,
   } = context;
 
-  const handleTodoSubmit = (e) => {
+  const handleTodoSubmit = (e:React.FormEvent) => {
     e.preventDefault();
     createTodo();
   };
@@ -133,7 +131,7 @@ const NewTodo = ({}) => {
               style={
                 todo.deleted ? { background: "green" } : { background: "red" }
               }
-              onClick={(e) => handleTodoClickChange(e, todo)}
+              onClick={(e: React.MouseEvent) => handleTodoClickChange(e, todo)}
               value={todo.deleted ? " Save and Restore Task" : "Delete"}
             />
           )}
