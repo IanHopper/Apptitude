@@ -17,7 +17,7 @@ const about = () => {
           cost and time estimation.
         </p>
         <h2>Technologies</h2>
-        <p>Apptitude uses a Next.js with typescript and connects to a Django REST API with a PostgreSQL DB. Deployment is with Docker.</p>
+        <p>Apptitude uses Next.js with Typescript and connects to a Django REST API with a PostgreSQL DB. Deployment is with Docker.</p>
       </div>
     </>
   );
