@@ -7,23 +7,13 @@ import jwtDecode from "jwt-decode";
 import {
   TODOS_DATA_UPDATE,
   DISPLAY_TODO_FORM,
-  HANDLE_SORT,
-  HANDLE_FILTER,
   HANDLE_INPUT_CHANGE,
-  HANDLE_UNDO,
-  DELETE_TODO,
   HANDLE_LOGIN_CHANGE,
   HANDLE_REGISTER_CHANGE,
-  USER_LOADING,
-  USER_LOADED,
-  AUTH_ERROR,
   LOGIN_SUCCESS,
-  LOGIN_FAIL,
   LOGOUT_USER,
   HANDLE_REGISTER_SUCCESS,
   HANDLE_SEARCH_INPUT,
-  UPDATE_TASK_DATA,
-  MULTI_SELECT,
   HANDLE_TODO_RESET,
   SET_FOCUS,
   URL_ENDPOINT,
@@ -33,7 +23,7 @@ import {
 } from "./types";
 import Router, { useRouter } from "next/router";
 
-const AppContext = createContext();
+const AppContext = createContext(null);
 
 export function AppWrapper({ children }) {
   const initialState = {
@@ -56,6 +46,7 @@ export function AppWrapper({ children }) {
       email: null,
       password: null,
     },
+    registrationFail: false,
     tasksData: {}, // object with total quantity, duration, and cost of displayed tasks
     todos: [], // todo array from API
     todo: {
@@ -89,10 +80,10 @@ export function AppWrapper({ children }) {
     };
     try {
       const res = await fetch(endpoint, options);
-      console.log(res.status);
-      res.status == "200"
+      res.status === 200
         ? Router.replace("/login")
-        : setUnique_Username(false);
+        //Add better alert here
+        : alert("Your registration failed");
       let data = await res.json();
 
       dispatch({
@@ -107,9 +98,9 @@ export function AppWrapper({ children }) {
   const login = async (e, username, password) => {
     e.preventDefault();
 
-    if (!username | !password) {
+    if (!username || !password) {
       return null;
-    } else if ((username.length < 4) | (password.length < 6)) {
+    } else if ((username.length < 4) || (password.length < 6)) {
       return null;
     }
 
@@ -131,7 +122,7 @@ export function AppWrapper({ children }) {
     const res = await fetch(endpoint, options);
     if (res.status === 200) {
       let { token, refreshToken } = await getKey();
-      let decoded_token = jwtDecode(token);
+      let decoded_token:{username:string} = jwtDecode(token);
       Router.replace("/");
       dispatch({
         type: LOGIN_SUCCESS,
@@ -187,7 +178,7 @@ export function AppWrapper({ children }) {
     const res = await fetch(endpoint, options);
     if (res.status === 200) {
       let { token, refreshToken } = await getKey();
-      let decoded_token = jwtDecode(token);
+      let decoded_token:{username:string} = jwtDecode(token);
 
       dispatch({
         type: LOGIN_SUCCESS,
@@ -268,8 +259,6 @@ export function AppWrapper({ children }) {
   };
 
   const cancelTodo = async () => {
-    let form = await displayTodoForm();
-
     dispatch({
       type: HANDLE_TODO_RESET,
     });
@@ -373,11 +362,19 @@ export function AppWrapper({ children }) {
       body: JSONdata,
     };
     const res = await fetch(endpoint, options);
+    
 
-    let form = await displayTodoForm();
+    
+
     // Force useSWR to refresh todos from api
     mutate([`${URL_ENDPOINT}api/projects/`, token]);
     mutate([`${URL_ENDPOINT}api/todos/`, token]);
+    
+    let todoForm = false
+    dispatch({
+      type: DISPLAY_TODO_FORM,
+      payload: todoForm
+    })
 
     dispatch({
       type: HANDLE_TODO_RESET,
@@ -418,7 +415,7 @@ export function AppWrapper({ children }) {
       body: JSONdata,
     };
     const res = await fetch(endpoint, options);
-    let form = e.target.type !== "checkbox" ? await displayTodoForm() : "";
+
     // Force useSWR to refresh todos from api
     mutate([`${URL_ENDPOINT}api/projects/`, token]);
     mutate([`${URL_ENDPOINT}api/todos/`, token]);
@@ -444,10 +441,15 @@ export function AppWrapper({ children }) {
     };
     const res = await fetch(endpoint, options);
 
-    let form = await displayTodoForm();
     // Force useSWR to refresh todos from api
     mutate([`${URL_ENDPOINT}api/projects/`, token]);
     mutate([`${URL_ENDPOINT}api/todos/`, token]);
+    
+    let todoForm = false
+    dispatch({
+      type: DISPLAY_TODO_FORM,
+      payload: todoForm
+    })
 
     dispatch({
       type: HANDLE_TODO_RESET,
