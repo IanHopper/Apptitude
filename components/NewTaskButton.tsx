@@ -5,11 +5,11 @@ import Link from "next/link";
 
 const NewTaskButton = () => {
   const context = useAppContext();
-  const { displayTodoForm, todoForm, todo } = context;
+  const { displayTodoForm, todoForm } = context;
 
   return (
     <>
-      <Link href="/">
+      <Link href="/" passHref>
         <button
           id="newTaskButton"
           onClick={displayTodoForm}

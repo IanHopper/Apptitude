@@ -16,15 +16,14 @@ const ProjectList = ({ projects }) => {
 
   let token = auth.token;
 
-  const handleProjectSubmit = (e) => {
-    console.log("createProject", token);
+  const handleProjectSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     createProject(projectName, token);
   };
 
 
-  const todoCount = (name) => {
-    let count = [];
+  const todoCount = (name: string) => {
+    let count: (object)[]  = [];
     if (todos && todos.length > 0) {
       if (name === "Deleted Tasks") {
         let deletedTodos = todos.filter((todo) => todo.deleted);
