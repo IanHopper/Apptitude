@@ -52,7 +52,7 @@ export function AppWrapper({ children }) {
     todo: {
       project: null,
     }, // current todo
-    focus: "All Projects",
+    focus: "All Tasks",
     activeProject: "",
     multiSelection: [], // multiple selections for group editing
     projects: [], // array derived from projects in objects in todos
@@ -316,7 +316,7 @@ export function AppWrapper({ children }) {
       type: HANDLE_PROJECT_RESET,
     });
     const activeProject = "";
-    const focus = "All Projects";
+    const focus = "All Tasks";
     dispatch({
       type: SET_FOCUS,
       payload: { focus, activeProject },

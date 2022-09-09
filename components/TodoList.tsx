@@ -37,7 +37,7 @@ const TodoList = () => {
       );
     }
 
-    if (focus !== "Inbox" && focus !== "Today" && focus !== "All Projects") {
+    if (focus !== "Inbox" && focus !== "Today" && focus !== "All Tasks") {
       filteredTodos = filteredTodos.filter((todo: { project_name: any; }) => todo.project_name === focus);
     }
     // Sort tasks by priority
@@ -106,7 +106,7 @@ const TodoList = () => {
                 )}
                 {focus !== "Inbox" &&
                   focus !== "Today" &&
-                  focus !== "All Projects" &&
+                  focus !== "All Tasks" &&
                   focus !== "Deleted Tasks" ? (
                   <FontAwesomeIcon
                     icon={faTrash}

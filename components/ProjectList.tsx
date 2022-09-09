@@ -69,13 +69,13 @@ const ProjectList = ({ projects }) => {
           Today {todoCount("Today")}
         </div>
         <div
-          key={"All Projects"}
-          id={"All Projects"}
-          style={focus === "All Projects" ? { fontWeight: "bold" } : null}
+          key={"All Tasks"}
+          id={"All Tasks"}
+          style={focus === "All Tasks" ? { fontWeight: "bold" } : null}
           className={todosStyles.card}
           onClick={setFocus}
         >
-          All Projects {todoCount("All")}
+          All Tasks {todoCount("All")}
         </div>
         <div
           key={"Deleted Tasks"}
@@ -88,7 +88,7 @@ const ProjectList = ({ projects }) => {
         </div>
 
         <div className={todosStyles.title}>
-          <h3>Projects</h3>
+          <h3>Tasks</h3>
         </div>
         <div>
           <form
